@@ -1,12 +1,16 @@
-import { SafeAreaView, Text } from "react-native";
-import "../../global.css";
+// app/(tabs)/index.tsx
+import PlaylistsList from "@/components/PlaylistsList"; // adjust path
+import { useEffect } from "react";
+import { SafeAreaView } from "react-native";
 
-export default function App() {
+export default function HomeView() {
+  useEffect(() => {
+    console.log("HomeView mounted");
+  }, []);
+
   return (
-    <SafeAreaView className="flex-1 items-center justify-center bg-white">
-      <Text className="text-xl font-bold text-blue-500 ">
-        Welcome to Nativewind!
-      </Text>
+    <SafeAreaView style={{ flex: 1 }}>
+      <PlaylistsList />
     </SafeAreaView>
   );
 }
