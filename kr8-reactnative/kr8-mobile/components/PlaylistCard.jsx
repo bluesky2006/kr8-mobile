@@ -3,8 +3,8 @@ import SquareCover from "@/components/SquareCover";
 import { Pressable, Text, View } from "react-native";
 
 export default function PlaylistCard({ playlist, onPress }) {
-  const tracks = playlist?.playlist_tracks ?? [];
-  const covers = tracks.slice(0, 3); // preview first 3
+  const tracks = playlist?.tracks ?? []; // ✅ matches API
+  const covers = tracks.slice(0, 3);
 
   return (
     <Pressable
@@ -34,13 +34,12 @@ export default function PlaylistCard({ playlist, onPress }) {
       {/* Covers row */}
       <View className="flex-row gap-2">
         {covers.length > 0 ? (
-          covers.map((t, idx) => (
-            <View key={t?.track_id ?? `${t?.track_title}-${idx}`} className="flex-1">
-              <SquareCover imageBytes={t?.track_image} />
+          covers.map((track, idx) => (
+            <View key={track?.id ?? `${track?.track_title}-${idx}`} className="flex-1">
+              <SquareCover imageBytes={track?.track_image} />
             </View>
           ))
         ) : (
-          // If no tracks at all, show a single wide placeholder
           <View className="w-full">
             <SquareCover />
           </View>

@@ -1,3 +1,4 @@
+// app/record-box/[id].jsx
 import PlaceholderArtwork from "@/components/PlaceholderArtwork";
 import TrackDetail from "@/components/TrackDetail";
 import { useCurrentPlaylist } from "@/context/CurrentPlaylistContext";
@@ -23,16 +24,14 @@ export default function RecordBoxScreen() {
     if (playlist) setCurrentPlaylist(playlist);
   }, [playlist, setCurrentPlaylist]);
 
-  const tracks = playlist?.playlist_tracks ?? [];
-
-  // First track's artwork as hero image (or placeholder)
+  const tracks = playlist?.tracks ?? []; // ✅ matches API shape
   const heroCover = tracks.length > 0 ? tracks[0]?.track_image : null;
 
   return (
     <View className="flex-1 bg-white dark:bg-black">
       <FlatList
         data={tracks}
-        keyExtractor={(t, i) => String(t?.track_id ?? `${t?.track_title}-${i}`)}
+        keyExtractor={(t, i) => String(t?.id ?? `${t?.track_title}-${i}`)}
         renderItem={({ item }) => <TrackDetail track={item} />}
         ItemSeparatorComponent={() => <View className="h-4" />}
         contentContainerStyle={{ padding: 16, paddingTop: 8 }}

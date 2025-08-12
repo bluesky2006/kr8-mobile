@@ -1,3 +1,4 @@
+// app/(tabs)/index.jsx
 import PlaylistCard from "@/components/PlaylistCard";
 import { useCurrentPlaylist } from "@/context/CurrentPlaylistContext";
 import { useRouter } from "expo-router";
@@ -18,7 +19,7 @@ export default function HomeView() {
       setLoading(true);
       setError(null);
       const data = await fetchPlaylistsByUserId(userId);
-      const playlistArray = data?.playlistsByUserId?.playlists ?? [];
+      const playlistArray = data?.nestedData?.playlists ?? [];
       setPlaylists(playlistArray);
     } catch (err) {
       setError(err?.message || "Failed to load playlists");
@@ -36,16 +37,16 @@ export default function HomeView() {
     <SafeAreaView style={{ flex: 1 }}>
       <FlatList
         data={playlists}
-        keyExtractor={(p, i) => String(p?.playlist_id ?? p?.playlist_name ?? i)}
+        keyExtractor={(p, i) => String(p?.id ?? p?.playlist_name ?? i)}
         renderItem={({ item }) => (
           <PlaylistCard
             playlist={item}
             onPress={() => {
-              setCurrentPlaylist(item); // ✅ store it globally
+              setCurrentPlaylist(item);
               router.push({
                 pathname: "/record-box/[id]",
                 params: {
-                  id: String(item?.playlist_id ?? item?.playlist_name),
+                  id: String(item?.id ?? item?.playlist_name),
                   payload: JSON.stringify(item),
                 },
               });
