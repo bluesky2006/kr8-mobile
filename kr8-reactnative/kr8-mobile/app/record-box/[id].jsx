@@ -34,30 +34,37 @@ export default function RecordBoxScreen() {
         keyExtractor={(t, i) => String(t?.id ?? `${t?.track_title}-${i}`)}
         renderItem={({ item }) => <TrackDetail track={item} />}
         ItemSeparatorComponent={() => <View className="h-4" />}
-        contentContainerStyle={{ padding: 16, paddingTop: 8 }}
+        contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 16, paddingBottom: 24 }}
         ListHeaderComponent={
           <View
             className="
-              mb-4 p-4 mx-[-4px]
-              rounded-2xl
+              mb-4 p-4 
+              rounded-lg
               bg-white/90 dark:bg-gray-900
               border border-black/5 dark:border-white/10
               shadow-sm
-              flex-row items-center
+              flex-row items-stretch
             "
           >
             {/* Left: title + track count */}
-            <View className="flex-1 pr-4">
+            <View className="flex-1 pr-4 justify-between">
               <Text
                 className="text-2xl font-semibold text-gray-900 dark:text-gray-100"
                 numberOfLines={2}
               >
                 {playlist?.playlist_name || "Playlist"}
               </Text>
-              <View className="mt-2 px-2 py-1 self-start rounded-full bg-red-400 dark:bg-gray-800">
-                <Text className="text-xs font-medium text-white dark:text-gray-300">
-                  {tracks.length} {tracks.length === 1 ? "track" : "tracks"}
-                </Text>
+              <View className="flex-2 flex-row gap-2">
+                <View className="px-2 py-1 self-start rounded-full bg-red-400 dark:bg-gray-800">
+                  <Text className="text-xs font-medium text-white dark:text-gray-300">
+                    {tracks.length} {tracks.length === 1 ? "track" : "tracks"}
+                  </Text>
+                </View>
+                <View className="px-2 py-1 self-start rounded-full bg-red-400 dark:bg-gray-800">
+                  <Text className="text-xs font-medium text-white dark:text-gray-300">
+                    Playlist length (placeholder)
+                  </Text>
+                </View>
               </View>
             </View>
 

@@ -11,7 +11,7 @@ export default function PlaylistCard({ playlist, onPress }) {
       onPress={onPress}
       className="
         mx-4 mb-4 p-4
-        rounded-2xl
+        rounded-lg
         bg-white dark:bg-gray-900
         border border-black/5 dark:border-white/10
         shadow-sm
