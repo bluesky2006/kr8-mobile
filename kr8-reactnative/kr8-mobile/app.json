@@ -9,7 +9,8 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.bluesky2006.kr8-mobile"
     },
     "android": {
       "adaptiveIcon": {
@@ -24,6 +25,7 @@
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
+      "@shopify/react-native-skia",
       "expo-router",
       [
         "expo-splash-screen",
