@@ -2,11 +2,16 @@
 import { Buffer } from "buffer";
 import { Image } from "react-native";
 
-export function renderImageFromUint8(imageData) {
+/**
+ * Renders an Image from Uint8-like data.
+ * Accepts extra props (e.g. className, resizeMode) for NativeWind styling.
+ */
+export function renderImageFromUint8(imageData, props = {}) {
   if (!imageData) return null;
 
-  const arr = Object.values(imageData);
-  let bytes = new Uint8Array(arr);
+  // Support objects like {0:...,1:...} or Uint8Array directly
+  const bytes =
+    imageData instanceof Uint8Array ? imageData : new Uint8Array(Object.values(imageData));
 
   const base64 = Buffer.from(bytes).toString("base64");
   const uri = `data:image/jpeg;base64,${base64}`;
@@ -14,9 +19,11 @@ export function renderImageFromUint8(imageData) {
   return (
     <Image
       source={{ uri }}
-      style={{ width: "100%", aspectRatio: 1, borderRadius: 2 }}
+      // Default to square, full-bleed; override with props if needed
+      className="w-full h-full"
       resizeMode="cover"
       accessibilityLabel="Track artwork"
+      {...props}
     />
   );
 }

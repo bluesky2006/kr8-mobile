@@ -1,6 +1,5 @@
 import { FontAwesome } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
-import React from "react";
 import { Platform } from "react-native";
 
 import { Colors } from "@/constants/Colors";
@@ -16,20 +15,27 @@ export default function TabLayout() {
         headerShown: false,
         tabBarStyle: Platform.select({
           ios: {
-            // Use a transparent background on iOS to show the blur effect
-            position: "absolute",
+            position: "absolute", // transparent background on iOS
           },
           default: {},
         }),
       }}
     >
+      {/* Playlists tab */}
       <Tabs.Screen
-        name="index"
+        name="index" // app/(tabs)/index.jsx
         options={{
-          title: "Home",
-          tabBarIcon: ({ color }) => (
-            <FontAwesome size={28} name="home" color={color} />
-          ),
+          title: "Playlists",
+          tabBarIcon: ({ color }) => <FontAwesome size={24} name="list" color={color} />,
+        }}
+      />
+
+      {/* Current Playlist tab */}
+      <Tabs.Screen
+        name="current" // app/(tabs)/current.jsx (you'll create this)
+        options={{
+          title: "Current Playlist",
+          tabBarIcon: ({ color }) => <FontAwesome size={24} name="play-circle" color={color} />,
         }}
       />
     </Tabs>
