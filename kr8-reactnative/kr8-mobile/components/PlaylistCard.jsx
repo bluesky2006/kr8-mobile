@@ -1,10 +1,16 @@
 // components/PlaylistCard.jsx
 import SquareCover from "@/components/SquareCover";
+import { convertLengthToTime } from "@/utils/convertLengthToTime";
+import { getPlaylistTotalSeconds } from "@/utils/getPlaylistTotalSeconds";
+import { useMemo } from "react";
 import { Pressable, Text, View } from "react-native";
 
 export default function PlaylistCard({ playlist, onPress }) {
-  const tracks = playlist?.tracks ?? []; // ✅ matches API
+  const tracks = playlist?.tracks ?? [];
   const covers = tracks.slice(0, 3);
+
+  const totalLengthSeconds = useMemo(() => getPlaylistTotalSeconds(tracks), [tracks]);
+  const totalLengthFormatted = convertLengthToTime(totalLengthSeconds);
 
   return (
     <Pressable
@@ -24,10 +30,17 @@ export default function PlaylistCard({ playlist, onPress }) {
           {playlist?.playlist_name || "Untitled playlist"}
         </Text>
 
-        <View className="px-2 py-1 rounded-full bg-red-400 dark:bg-gray-800">
-          <Text className="text-xs font-medium text-white dark:text-gray-300">
-            {tracks.length} {tracks.length === 1 ? "track" : "tracks"}
-          </Text>
+        <View className="flex-row gap-2">
+          <View className="px-2 py-1 rounded-full bg-red-400 dark:bg-gray-800">
+            <Text className="text-xs font-medium text-white dark:text-gray-300">
+              {tracks.length} {tracks.length === 1 ? "track" : "tracks"}
+            </Text>
+          </View>
+          <View className="px-2 py-1 rounded-full bg-red-400 dark:bg-gray-800">
+            <Text className="text-xs font-medium text-white dark:text-gray-300">
+              {totalLengthFormatted}
+            </Text>
+          </View>
         </View>
       </View>
 

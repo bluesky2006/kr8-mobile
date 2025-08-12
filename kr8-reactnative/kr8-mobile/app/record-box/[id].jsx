@@ -2,6 +2,8 @@
 import PlaceholderArtwork from "@/components/PlaceholderArtwork";
 import TrackDetail from "@/components/TrackDetail";
 import { useCurrentPlaylist } from "@/context/CurrentPlaylistContext";
+import { convertLengthToTime } from "@/utils/convertLengthToTime";
+import { getPlaylistTotalSeconds } from "@/utils/getPlaylistTotalSeconds";
 import { renderImageFromUint8 } from "@/utils/imageRenderer";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { useLocalSearchParams } from "expo-router";
@@ -24,8 +26,11 @@ export default function RecordBoxScreen() {
     if (playlist) setCurrentPlaylist(playlist);
   }, [playlist, setCurrentPlaylist]);
 
-  const tracks = playlist?.tracks ?? []; // ✅ matches API shape
+  const tracks = playlist?.tracks ?? [];
   const heroCover = tracks.length > 0 ? tracks[0]?.track_image : null;
+
+  const totalLengthSeconds = useMemo(() => getPlaylistTotalSeconds(tracks), [tracks]);
+  const totalLengthFormatted = convertLengthToTime(totalLengthSeconds);
 
   return (
     <View className="flex-1 bg-white dark:bg-black">
@@ -62,7 +67,7 @@ export default function RecordBoxScreen() {
                 </View>
                 <View className="px-2 py-1 self-start rounded-full bg-red-400 dark:bg-gray-800">
                   <Text className="text-xs font-medium text-white dark:text-gray-300">
-                    Playlist length (placeholder)
+                    {totalLengthFormatted}
                   </Text>
                 </View>
               </View>
