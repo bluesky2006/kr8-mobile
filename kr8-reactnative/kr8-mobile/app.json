@@ -17,7 +17,8 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.bluesky2006.kr8mobile"
     },
     "web": {
       "bundler": "metro",
@@ -25,7 +26,6 @@
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
-      "@shopify/react-native-skia",
       "expo-router",
       [
         "expo-splash-screen",
