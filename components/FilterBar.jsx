@@ -1,5 +1,5 @@
 // components/FilterBar.jsx
-import { FontAwesome5 } from "@expo/vector-icons";
+import { FontAwesome, FontAwesome5 } from "@expo/vector-icons";
 import { useEffect } from "react";
 import {
   LayoutAnimation,
@@ -12,17 +12,21 @@ import {
 } from "react-native";
 
 export default function FilterBar({
-  // state comes from parent
+  // optional toggle props
   showFilters,
   setShowFilters,
+
+  // state from parent
   showFaves,
   setShowFaves,
   query,
   setQuery,
-  // optional
+
+  // optional UI
   placeholder = "Search…",
-  helperText, // e.g. "Showing 5 of 12 tracks"
+  helperText,
   className = "",
+  style, // NEW — accept a style prop for outer container
 }) {
   // Enable LayoutAnimation on Android
   useEffect(() => {
@@ -31,56 +35,50 @@ export default function FilterBar({
     }
   }, []);
 
+  const isExpanded = typeof showFilters === "boolean" ? showFilters : true;
+  const hasToggle = typeof setShowFilters === "function";
+
   const toggleFilters = () => {
+    if (!hasToggle) return;
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     setShowFilters((v) => !v);
   };
 
   return (
-    <View>
-      {/* Toggle row */}
-      <Pressable
-        onPress={toggleFilters}
-        className="flex-row items-center justify-center gap-2 mb-2"
-        accessibilityRole="button"
-        accessibilityLabel={showFilters ? "Hide filters" : "Show filters"}
-        accessibilityState={{ expanded: showFilters }}
-      >
-        <Text className="text-sm font-medium text-gray-600 dark:text-gray-300">
-          {showFilters ? "Hide filters" : "Show filters"}
-        </Text>
-        <FontAwesome5
-          name={showFilters ? "chevron-up" : "chevron-down"}
-          size={12}
-          color="#9CA3AF"
-        />
-      </Pressable>
-
-      {/* Filters panel */}
-      {showFilters && (
-        <View
-          className={`
-            mb-4 p-3
-            rounded-lg
-            bg-white/90 dark:bg-gray-900
-            border border-black/5 dark:border-white/10
-            shadow-sm
-            ${className}
-          `}
+    <View style={style} className={className}>
+      {hasToggle && (
+        <Pressable
+          onPress={toggleFilters}
+          className="flex-row items-center justify-center gap-2 mb-2"
+          accessibilityRole="button"
+          accessibilityLabel={isExpanded ? "Hide filters" : "Show filters"}
+          accessibilityState={{ expanded: isExpanded }}
         >
-          <View className="flex-row gap-8 items-center">
+          <Text className="text-sm font-medium text-gray-600 dark:text-gray-300">
+            {isExpanded ? "Hide filters" : "Show filters"}
+          </Text>
+          <FontAwesome5
+            name={isExpanded ? "chevron-up" : "chevron-down"}
+            size={12}
+            color="#9CA3AF"
+          />
+        </Pressable>
+      )}
+
+      {isExpanded && (
+        <View className="bg-white dark:bg-gray-900 shadow-xs">
+          <View className="flex-row gap-4 items-center">
             {/* Favourites toggle */}
             <Pressable
               onPress={() => setShowFaves((v) => !v)}
-              className={`
-                flex-row items-center gap-2 px-3 py-2 rounded-full
-                ${showFaves ? "bg-red-400" : "bg-gray-200 dark:bg-gray-800"}
-              `}
+              className={`flex-row items-center gap-2 px-3 py-2 rounded-full ${
+                showFaves ? "bg-red-400" : "bg-gray-200 dark:bg-gray-800"
+              }`}
               accessibilityRole="button"
               accessibilityState={{ selected: showFaves }}
               accessibilityLabel="Toggle favourites filter"
             >
-              <FontAwesome5
+              <FontAwesome
                 name={showFaves ? "star" : "star-o"}
                 size={14}
                 color={showFaves ? "#fff" : "#9CA3AF"}

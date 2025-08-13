@@ -15,9 +15,8 @@ export default function HomeView() {
   const userId = 1;
   const router = useRouter();
 
-  // --- filters for playlists
-  const [showFilters, setShowFilters] = useState(false);
-  const [showFaves, setShowFaves] = useState(false); // assumes playlist.favourite boolean
+  // filters for playlists (no show/hide here)
+  const [showFaves, setShowFaves] = useState(false);
   const [query, setQuery] = useState("");
 
   const load = useCallback(async () => {
@@ -39,7 +38,6 @@ export default function HomeView() {
     load();
   }, [load]);
 
-  // --- derived filtered playlists
   const filteredPlaylists = useMemo(() => {
     const q = query.trim().toLowerCase();
     return (playlists ?? []).filter((p) => {
@@ -50,54 +48,58 @@ export default function HomeView() {
     });
   }, [playlists, showFaves, query]);
 
+  const Header = (
+    <FilterBar
+      style={{ padding: 16 }}
+      className="bg-white"
+      showFaves={showFaves}
+      setShowFaves={setShowFaves}
+      query={query}
+      setQuery={setQuery}
+      placeholder="Search playlists…"
+      helperText={
+        showFaves || query
+          ? `Showing ${filteredPlaylists.length} of ${playlists.length} playlists` +
+            (showFaves ? " • favourites only" : "") +
+            (query ? " • filtered" : "")
+          : undefined
+      }
+    />
+  );
+
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1 }} className="bg-white dark:bg-black">
       <FlatList
         data={filteredPlaylists}
         keyExtractor={(p, i) => String(p?.id ?? p?.playlist_name ?? i)}
-        renderItem={({ item }) => (
-          <PlaylistCard
-            playlist={item}
-            onPress={() => {
-              setCurrentPlaylist(item);
-              router.push({
-                pathname: "/record-box/[id]",
-                params: {
-                  id: String(item?.id ?? item?.playlist_name),
-                  payload: JSON.stringify(item),
-                },
-              });
-            }}
-          />
-        )}
-        refreshControl={<RefreshControl refreshing={!!loading} onRefresh={load} />}
-        ListHeaderComponent={
-          <View style={{ paddingHorizontal: 16, paddingTop: 12 }}>
-            <FilterBar
-              showFilters={showFilters}
-              setShowFilters={setShowFilters}
-              showFaves={showFaves}
-              setShowFaves={setShowFaves}
-              query={query}
-              setQuery={setQuery}
-              placeholder="Search playlists…"
-              helperText={
-                showFaves || query
-                  ? `Showing ${filteredPlaylists.length} of ${playlists.length} playlists` +
-                    (showFaves ? " • favourites only" : "") +
-                    (query ? " • filtered" : "")
-                  : undefined
-              }
+        renderItem={({ item, index }) => (
+          <View>
+            <PlaylistCard
+              playlist={item}
+              onPress={() => {
+                setCurrentPlaylist(item);
+                router.push({
+                  pathname: "/record-box/[id]",
+                  params: {
+                    id: String(item?.id ?? item?.playlist_name),
+                    payload: JSON.stringify(item),
+                  },
+                });
+              }}
             />
           </View>
-        }
+        )}
+        ItemSeparatorComponent={() => <View style={{ height: 8 }} />}
+        ListHeaderComponent={Header}
+        stickyHeaderIndices={[0]}
+        contentContainerStyle={{ paddingBottom: 8 }}
+        style={{ zIndex: 10 }}
+        refreshControl={<RefreshControl refreshing={!!loading} onRefresh={load} />}
         ListEmptyComponent={
           <View style={{ padding: 16 }}>
             <Text>{loading ? "Loading…" : error || "No playlists yet."}</Text>
           </View>
         }
-        ItemSeparatorComponent={() => <View style={{ height: 8 }} />}
-        contentContainerStyle={{ paddingVertical: 8 }}
       />
     </SafeAreaView>
   );
