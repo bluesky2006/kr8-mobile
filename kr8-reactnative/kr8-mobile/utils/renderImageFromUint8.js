@@ -1,4 +1,4 @@
-// utils/imageRenderer.js
+// utils/renderImageFromUint8.js
 import { Buffer } from "buffer";
 import { Image } from "react-native";
 
