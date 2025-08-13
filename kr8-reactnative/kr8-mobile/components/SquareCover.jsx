@@ -1,5 +1,5 @@
 import PlaceholderArtwork from "@/components/PlaceholderArtwork";
-import { renderImageFromUint8 } from "@/utils/imageRenderer";
+import { renderImageFromUint8 } from "@/utils/renderImageFromUint8";
 import { View } from "react-native";
 
 /**
