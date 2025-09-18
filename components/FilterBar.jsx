@@ -49,7 +49,7 @@ export default function FilterBar({
       {hasToggle && (
         <Pressable
           onPress={toggleFilters}
-          className="flex-row items-center justify-center gap-2"
+          className={`flex-row items-center justify-center gap-2 ${isExpanded ? "mb-2" : ""}`}
           accessibilityRole="button"
           accessibilityLabel={isExpanded ? "Hide filters" : "Show filters"}
           accessibilityState={{ expanded: isExpanded }}
