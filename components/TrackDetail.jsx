@@ -7,21 +7,13 @@ import { InfoPill } from "./InfoPill";
 export default function TrackDetail({ track, onPress }) {
   return (
     <Pressable
-      onPress={onPress}
-      accessibilityRole="button"
-      className="
-        w-full aspect-square relative
-        rounded-lg overflow-hidden
-        bg-white dark:bg-gray-900
-        border border-black/5 dark:border-white/10
-        shadow-sm active:opacity-95
-      "
+      className="w-full relative rounded-lg overflow-hidden bg-white dark:bg-gray-900 border border-black/5 dark:border-white/10 shadow-sm active:opacity-95"
+      style={{ height: 400 }}
     >
       {/* Cover image */}
       <View className="absolute inset-0">
         <SquareCover imageBytes={track?.track_image} className="w-full h-full rounded-none" />
       </View>
-
       {/* Title / artist */}
       <View
         className="
