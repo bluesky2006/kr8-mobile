@@ -4,7 +4,9 @@ import PlaylistCard from "@/components/PlaylistCard";
 import { useCurrentPlaylist } from "@/context/CurrentPlaylistContext";
 import { useRouter } from "expo-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { FlatList, RefreshControl, SafeAreaView, Text, View } from "react-native";
+import { FlatList, RefreshControl, Text, View } from "react-native";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
+
 import { fetchPlaylistsByUserId } from "../../api/api";
 
 export default function HomeView() {
@@ -12,6 +14,9 @@ export default function HomeView() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { setCurrentPlaylist } = useCurrentPlaylist();
+  const insets = useSafeAreaInsets();
+
+  //hardcoded userId for now
   const userId = 1;
   const router = useRouter();
 
@@ -48,52 +53,60 @@ export default function HomeView() {
     });
   }, [playlists, showFaves, query]);
 
-  const Header = (
-    <FilterBar
-      style={{ padding: 16 }}
-      className="bg-white"
-      showFaves={showFaves}
-      setShowFaves={setShowFaves}
-      query={query}
-      setQuery={setQuery}
-      placeholder="Search playlists…"
-      helperText={
-        showFaves || query
-          ? `Showing ${filteredPlaylists.length} of ${playlists.length} playlists` +
-            (showFaves ? " • favourites only" : "") +
-            (query ? " • filtered" : "")
-          : undefined
-      }
-    />
-  );
-
   return (
     <SafeAreaView style={{ flex: 1 }} className="bg-white dark:bg-black">
+      {/* Fixed Header */}
+      <View
+        style={{
+          position: "absolute",
+          top: insets.top,
+          left: 0,
+          right: 0,
+          zIndex: 20, // stays above list
+        }}
+      >
+        <FilterBar
+          style={{ padding: 16 }}
+          className="bg-white"
+          showFaves={showFaves}
+          setShowFaves={setShowFaves}
+          query={query}
+          setQuery={setQuery}
+          placeholder="Search playlists…"
+          helperText={
+            showFaves || query
+              ? `Showing ${filteredPlaylists.length} of ${playlists.length} playlists` +
+                (showFaves ? " • favourites only" : "") +
+                (query ? " • filtered" : "")
+              : undefined
+          }
+        />
+      </View>
+
+      {/* List content with padding at the top to not overlap header */}
       <FlatList
         data={filteredPlaylists}
         keyExtractor={(p, i) => String(p?.id ?? p?.playlist_name ?? i)}
-        renderItem={({ item, index }) => (
-          <View>
-            <PlaylistCard
-              playlist={item}
-              onPress={() => {
-                setCurrentPlaylist(item);
-                router.push({
-                  pathname: "/record-box/[id]",
-                  params: {
-                    id: String(item?.id ?? item?.playlist_name),
-                    payload: JSON.stringify(item),
-                  },
-                });
-              }}
-            />
-          </View>
+        renderItem={({ item }) => (
+          <PlaylistCard
+            playlist={item}
+            onPress={() => {
+              setCurrentPlaylist(item);
+              router.push({
+                pathname: "/record-box/[id]",
+                params: {
+                  id: String(item?.id ?? item?.playlist_name),
+                  payload: JSON.stringify(item),
+                },
+              });
+            }}
+          />
         )}
         ItemSeparatorComponent={() => <View style={{ height: 8 }} />}
-        ListHeaderComponent={Header}
-        stickyHeaderIndices={[0]}
-        contentContainerStyle={{ paddingBottom: 8 }}
-        style={{ zIndex: 10 }}
+        contentContainerStyle={{
+          paddingTop: 72, // height of your header (adjust!)
+          paddingBottom: 8,
+        }}
         refreshControl={<RefreshControl refreshing={!!loading} onRefresh={load} />}
         ListEmptyComponent={
           <View style={{ padding: 16 }}>
