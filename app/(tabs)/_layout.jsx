@@ -1,41 +1,47 @@
+import { Colors } from "@/constants/Colors";
+import { useColorScheme } from "@/hooks/useColorScheme";
 import { FontAwesome } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 import { Platform } from "react-native";
 
-import { Colors } from "@/constants/Colors";
-import { useColorScheme } from "@/hooks/useColorScheme";
-
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+  const themeColors = Colors[colorScheme ?? "light"];
 
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
         headerShown: false,
-        tabBarStyle: Platform.select({
-          ios: {
-            position: "absolute", // transparent background on iOS
-          },
-          default: {},
-        }),
+        tabBarActiveTintColor: "#f87171",
+        tabBarInactiveTintColor: themeColors.tabIconDefault,
+        tabBarStyle: {
+          backgroundColor: themeColors.background, // matches SafeAreaView
+          borderTopWidth: 0, // no divider line
+          height: Platform.OS === "ios" ? 90 : 70, // taller on iOS
+          paddingBottom: Platform.OS === "ios" ? 24 : 12, // breathing space
+          paddingTop: 8,
+        },
+        tabBarLabelStyle: {
+          fontSize: 12,
+          fontFamily: "Inter",
+        },
       }}
     >
       {/* Playlists tab */}
       <Tabs.Screen
-        name="index" // app/(tabs)/index.jsx
+        name="index"
         options={{
           title: "Playlists",
-          tabBarIcon: ({ color }) => <FontAwesome size={24} name="list" color={color} />,
+          tabBarIcon: ({ color }) => <FontAwesome size={22} name="list" color={color} />,
         }}
       />
 
       {/* Current Playlist tab */}
       <Tabs.Screen
-        name="current" // app/(tabs)/current.jsx (you'll create this)
+        name="current"
         options={{
-          title: "Current Playlist",
-          tabBarIcon: ({ color }) => <FontAwesome size={24} name="play-circle" color={color} />,
+          title: "Current",
+          tabBarIcon: ({ color }) => <FontAwesome size={22} name="play-circle" color={color} />,
         }}
       />
     </Tabs>
