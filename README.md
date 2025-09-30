@@ -59,6 +59,7 @@ kr8-mobile/
 ## 🛣️ Roadmap
 
 - [ ] ☁️ Sync with Supabase cloud storage
+- [ ] 🧑‍💻 User login
 - [ ] 🌀 Enhanced animation/render of record "sleeves"
 - [ ] 🔍 Search and filter by artist, label, BPM, etc.
 - [ ] 🎛️ Extend to integrate with DJ software file formats
