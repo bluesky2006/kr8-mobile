@@ -1,50 +1,75 @@
-# Welcome to your Expo app 👋
+# 🎚️ kr8-mobile
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+**kr8-mobile** is the mobile companion app for the kr8 ecosystem — a virtual record bag that lets DJs and vinyl enthusiasts browse curated playlists, sleeve artwork and track metadata.
 
-## Get started
+This app is built with **React Native**, **Expo Router** and **Tailwind CSS**, and is designed to work alongside `kr8-desktop`, which extracts and uploads track data from m3u files.
 
-1. Install dependencies
+---
+
+## 🚀 Quick Start
+
+1. **Install dependencies**
 
    ```bash
    npm install
    ```
 
-2. Start the app
+2. **Start the development server**
 
    ```bash
    npx expo start
    ```
 
-In the output, you'll find options to open the app in a
+3. **Run the app**
+   - In **Expo Go** on your phone (scan the QR code)
+   - On an iOS/Android **simulator**
+   - In a custom **development build**
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+---
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## 📁 Project Structure
 
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
+```
+kr8-mobile/
+├── app/                  # Expo Router app directory (routes)
+├── assets/               # Images, fonts, etc.
+├── components/           # Reusable UI components
+├── constants/            # Colours
+├── context/              # React Context providers
+├── hooks/                # Custom hooks
+├── utils/                # Data processing and helpers
+├── api/                  # API and Supabase utilities (optional integration)
+├── global.css            # Tailwind base styling
+├── tailwind.config.js    # Tailwind setup
+├── app.json              # Expo project config
+├── playlistData.js       # Local test data (to be replaced with Supabase fetch)
+└── README.md
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+---
 
-## Learn more
+## 🌐 Features
 
-To learn more about developing your project with Expo, look at the following resources:
+- 🧾 View playlists parsed from DJ software
+- 🎨 Browse vinyl-style sleeve artwork and track metadata
+- 🧭 Navigate decks, playlists and tracks via tabs
+- 🗃️ Toggle between local dev data and Supabase integration (in progress)
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+---
 
-## Join the community
+## 🛣️ Roadmap
 
-Join our community of developers creating universal apps.
+- [ ] ☁️ Sync with Supabase cloud storage
+- [ ] 🌀 Enhanced animation/render of record "sleeves"
+- [ ] 🔍 Search and filter by artist, label, BPM, etc.
+- [ ] 🎛️ Extend to integrate with DJ software file formats
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+---
+
+## 📚 Tech Stack
+
+- [React Native](https://reactnative.dev/)
+- [Expo](https://expo.dev/)
+- [Expo Router](https://expo.dev/router)
+- [Tailwind CSS (via NativeWind)](https://www.nativewind.dev/)
+- [Supabase](https://supabase.com/) (via `kr8-server`)
