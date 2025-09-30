@@ -34,9 +34,8 @@ kr8-mobile/
 ├── app/                  # Expo Router app directory (routes)
 ├── assets/               # Images, fonts, etc.
 ├── components/           # Reusable UI components
-├── constants/            # Colours
 ├── context/              # React Context providers
-├── hooks/                # Custom hooks
+├── hooks/                # Custom hooks (e.g. colours)
 ├── utils/                # Data processing and helpers
 ├── api/                  # API and Supabase utilities (optional integration)
 ├── global.css            # Tailwind base styling
