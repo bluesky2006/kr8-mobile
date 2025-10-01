@@ -11,7 +11,7 @@ module.exports = {
       fontFamily: {
         inter: "Inter_400Regular",
         "inter-semibold": "Inter_600SemiBold",
-        rubik80s: ["Rubik80sFade_400Regular"], // or "Rubik80sFade"
+        rubik80s: ["Rubik80sFade"],
       },
     },
   },
