@@ -27,23 +27,27 @@ export default function TabLayout() {
         },
       }}
     >
-      {/* Playlists tab */}
+      <Tabs.Screen
+        name="home"
+        options={{
+          title: "Home",
+          tabBarIcon: ({ color }) => <FontAwesome size={22} name="home" color={color} />,
+        }}
+      />
       <Tabs.Screen
         name="index"
         options={{
-          title: "Playlists",
-          tabBarIcon: ({ color }) => <FontAwesome size={22} name="list" color={color} />,
+          title: "Crates",
+          tabBarIcon: ({ color }) => <FontAwesome size={22} name="archive" color={color} />,
         }}
       />
-
-      {/* Current Playlist tab */}
       <Tabs.Screen
-        name="current"
+        name="record-box/[id]"
         options={{
-          title: "Current",
-          tabBarIcon: ({ color }) => <FontAwesome size={22} name="play-circle" color={color} />,
+          title: "Current Crate",
+          tabBarIcon: ({ color }) => <FontAwesome size={22} name="headphones" color={color} />,
         }}
-      />
+      />{" "}
     </Tabs>
   );
 }
