@@ -3,9 +3,9 @@ import { Pressable, Text, View } from "react-native";
 import { convertLengthToTime } from "../utils/convertLengthToTime";
 import { InfoPill } from "./InfoPill";
 
-export default function TrackDetail({ track, onPress }) {
+export default function TrackDetail({ track }) {
   return (
-    <Pressable className="w-full relative rounded-lg overflow-hidden bg-white dark:bg-gray-900 border border-black/5 dark:border-white/10 shadow-sm active:opacity-95 aspect-square">
+    <Pressable className="w-full relative rounded-lg overflow-hidden bg-white dark:bg-gray-900 border border-black/5 dark:border-white/10 shadow-sm aspect-square">
       <View className="absolute inset-0">
         <SquareCover imageBytes={track?.track_image} />
       </View>
@@ -16,9 +16,16 @@ export default function TrackDetail({ track, onPress }) {
           bg-gray-400 dark:bg-black/50
         "
       >
-        <View className="mb-3">
+        {track?.PlaylistTrack?.playlist_position != null && (
+          <View className="absolute top-2 right-2 bg-white/25 rounded-md py-1.5 px-2 items-center justify-center">
+            <Text className="text-white text-xs font-inter-semibold">
+              # {track.PlaylistTrack.playlist_position}
+            </Text>
+          </View>
+        )}
+        <View className="mb-3 pr-10">
           <Text
-            className="text-white font-inter-semibold text-base leading-tight"
+            className="text-white font-inter-semibold text-base leading-tight mb-1"
             numberOfLines={1}
           >
             {track?.track_title || "Untitled"}
