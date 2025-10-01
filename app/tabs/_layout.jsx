@@ -2,7 +2,6 @@ import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { FontAwesome } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
-import { Platform } from "react-native";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -15,10 +14,10 @@ export default function TabLayout() {
         tabBarActiveTintColor: "#f87171",
         tabBarInactiveTintColor: themeColors.tabIconDefault,
         tabBarStyle: {
-          backgroundColor: themeColors.background, // matches SafeAreaView
-          borderTopWidth: 0, // no divider line
-          height: Platform.OS === "ios" ? 90 : 70, // taller on iOS
-          paddingBottom: Platform.OS === "ios" ? 24 : 12, // breathing space
+          backgroundColor: themeColors.background,
+          borderTopWidth: 0,
+          height: 90,
+          paddingBottom: 12,
           paddingTop: 8,
         },
         tabBarLabelStyle: {
@@ -42,12 +41,12 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="record-box/[id]"
+        name="crate/[id]"
         options={{
           title: "Current Crate",
           tabBarIcon: ({ color }) => <FontAwesome size={22} name="headphones" color={color} />,
         }}
-      />{" "}
+      />
     </Tabs>
   );
 }
