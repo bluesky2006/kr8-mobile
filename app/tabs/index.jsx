@@ -1,4 +1,3 @@
-// app/(tabs)/index.jsx
 import FilterBar from "@/components/FilterBar";
 import PlaylistCard from "@/components/PlaylistCard";
 import { useCurrentPlaylist } from "@/context/CurrentPlaylistContext";
@@ -9,20 +8,19 @@ import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 
 import { fetchPlaylistsByUserId } from "../../api/api";
 
-export default function PlaylistsView() {
+export default function CratesView() {
   const [playlists, setPlaylists] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { setCurrentPlaylist } = useCurrentPlaylist();
-  const insets = useSafeAreaInsets();
-
-  //hardcoded userId for now
-  const userId = 1;
-  const router = useRouter();
-
-  // filters for playlists (no show/hide here)
   const [showFaves, setShowFaves] = useState(false);
   const [query, setQuery] = useState("");
+  const { setCurrentPlaylist } = useCurrentPlaylist();
+
+  const insets = useSafeAreaInsets();
+  const router = useRouter();
+
+  // Hardcoded userId for now
+  const userId = 1;
 
   const load = useCallback(async () => {
     try {
@@ -55,14 +53,13 @@ export default function PlaylistsView() {
 
   return (
     <SafeAreaView style={{ flex: 1 }} className="bg-white dark:bg-black">
-      {/* Fixed Header */}
       <View
         style={{
           position: "absolute",
           top: insets.top,
           left: 0,
           right: 0,
-          zIndex: 20, // stays above list
+          zIndex: 20,
         }}
       >
         <FilterBar
@@ -83,7 +80,6 @@ export default function PlaylistsView() {
         />
       </View>
 
-      {/* List content with padding at the top to not overlap header */}
       <FlatList
         data={filteredPlaylists}
         keyExtractor={(p, i) => String(p?.id ?? p?.playlist_name ?? i)}
@@ -93,7 +89,7 @@ export default function PlaylistsView() {
             onPress={() => {
               setCurrentPlaylist(item);
               router.push({
-                pathname: "/tabs/record-box/[id]",
+                pathname: "/tabs/crate/[id]",
                 params: {
                   id: String(item?.id ?? item?.playlist_name),
                   payload: JSON.stringify(item),
