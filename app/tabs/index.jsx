@@ -1,9 +1,9 @@
-import FilterBar from "@/components/FilterBar";
 import PlaylistCard from "@/components/PlaylistCard";
 import { useCurrentPlaylist } from "@/context/CurrentPlaylistContext";
+import { FontAwesome } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { FlatList, RefreshControl, Text, View } from "react-native";
+import { FlatList, Pressable, RefreshControl, Text, TextInput, View } from "react-native";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { fetchPlaylistsByUserId } from "../../api/api";
 
@@ -40,12 +40,12 @@ export default function CratesView() {
   }, [load]);
 
   const filteredPlaylists = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    return (playlists ?? []).filter((p) => {
-      if (showFaves && !p?.favourite) return false;
-      if (!q) return true;
-      const name = (p?.playlist_name ?? "").toLowerCase();
-      return name.includes(q);
+    const trimmedQuery = query.trim().toLowerCase();
+    return playlists.filter((playlist) => {
+      if (!trimmedQuery) return true;
+      if (showFaves && !playlist?.favourite) return false;
+      const name = (playlist?.playlist_name ?? "").toLowerCase();
+      return name.includes(trimmedQuery);
     });
   }, [playlists, showFaves, query]);
 
@@ -58,29 +58,60 @@ export default function CratesView() {
           left: 0,
           right: 0,
           zIndex: 20,
+          padding: 16,
+          backgroundColor: "white",
         }}
       >
-        <FilterBar
-          style={{ padding: 16 }}
-          className="bg-white"
-          showFaves={showFaves}
-          setShowFaves={setShowFaves}
-          query={query}
-          setQuery={setQuery}
-          placeholder="Search playlists…"
-          helperText={
-            showFaves || query
-              ? `Showing ${filteredPlaylists.length} of ${playlists.length} playlists` +
-                (showFaves ? " • favourites only" : "") +
-                (query ? " • filtered" : "")
-              : undefined
-          }
-        />
+
+        <View className="flex-row gap-4 items-center">
+          <Pressable
+            onPress={() => setShowFaves((v) => !v)}
+            className={`flex-row items-center gap-2 px-3 py-2 rounded-full ${
+              showFaves ? "bg-red-400" : "bg-gray-200 dark:bg-gray-800"
+            }`}
+          >
+            <FontAwesome
+              name={showFaves ? "star" : "star-o"}
+              size={14}
+              color={showFaves ? "#fff" : "#9CA3AF"}
+            />
+            <Text
+              className={`text-xs font-medium ${
+                showFaves ? "text-white" : "text-gray-500 dark:text-gray-300"
+              }`}
+            >
+              Favourites
+            </Text>
+          </Pressable>
+          
+          <View className="flex-1">
+            <TextInput
+              value={query}
+              onChangeText={setQuery}
+              placeholder="Search playlists…"
+              placeholderTextColor="#9CA3AF"
+              className="
+                px-3 py-2 rounded-lg
+                bg-gray-100 dark:bg-gray-800
+                text-gray-900 dark:text-gray-100
+                border border-black/5 dark:border-white/10
+              "
+            />
+          </View>
+        </View>
+
+        {(showFaves || query) && (
+          <Text className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+            Showing {filteredPlaylists.length} of {playlists.length} playlists
+            {showFaves ? " • favourites only" : ""}
+            {query ? " • filtered" : ""}
+          </Text>
+        )}
       </View>
 
       <FlatList
         data={filteredPlaylists}
-        keyExtractor={(p, i) => String(p?.id ?? p?.playlist_name ?? i)}
+        keyExtractor={(playlist, index) => String(playlist?.id ?? playlist?.playlist_name ?? index)}
         renderItem={({ item }) => (
           <PlaylistCard
             playlist={item}
@@ -90,7 +121,6 @@ export default function CratesView() {
                 pathname: "/tabs/crate/[id]",
                 params: {
                   id: String(item?.id ?? item?.playlist_name),
-                  payload: JSON.stringify(item),
                 },
               });
             }}
@@ -101,11 +131,11 @@ export default function CratesView() {
           paddingTop: 72,
           paddingBottom: 8,
         }}
-        refreshControl={<RefreshControl refreshing={!!loading} onRefresh={load} />}
+        refreshControl={<RefreshControl refreshing={loading} onRefresh={load} />}
         ListEmptyComponent={
           <View className="py-20 items-center">
             <Text className="mt-3 text-gray-500 dark:text-gray-400">
-              {loading ? "Loading…" : error || `No playlists matching '${query}'.`}{" "}
+              {loading ? "Loading…" : error || `No playlists matching '${query}'.`}
             </Text>
           </View>
         }
