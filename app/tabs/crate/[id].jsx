@@ -111,7 +111,7 @@ export default function CrateScreen() {
         <Carousel
           vertical
           width={windowWidth}
-          height={windowHeight}
+          height={windowHeight * 0.75} // shrink a bit so overlap is visible
           data={filteredTracks}
           renderItem={({ item }) => (
             <View className="px-4">
@@ -120,10 +120,12 @@ export default function CrateScreen() {
           )}
           pagingEnabled
           loop={false}
-          mode="parallax"
+          mode="vertical-stack"
           modeConfig={{
-            parallaxScrollingScale: 1,
-            parallaxScrollingOffset: 100,
+            snapDirection: "left", // or "top" for vertical
+            stackInterval: 30, // how much overlap in px
+            scaleInterval: 0.08, // how much the behind cards shrink
+            rotateZDeg: 0, // tilt (set >0 if you want angled overlap)
           }}
         />
       ) : (
