@@ -9,7 +9,7 @@ import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 
 import { fetchPlaylistsByUserId } from "../../api/api";
 
-export default function HomeView() {
+export default function PlaylistsView() {
   const [playlists, setPlaylists] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -93,7 +93,7 @@ export default function HomeView() {
             onPress={() => {
               setCurrentPlaylist(item);
               router.push({
-                pathname: "/record-box/[id]",
+                pathname: "/tabs/record-box/[id]",
                 params: {
                   id: String(item?.id ?? item?.playlist_name),
                   payload: JSON.stringify(item),
