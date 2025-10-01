@@ -2,12 +2,6 @@ import PlaceholderArtwork from "@/components/PlaceholderArtwork";
 import { renderImageFromUint8 } from "@/utils/renderImageFromUint8";
 import { View } from "react-native";
 
-/**
- * Renders a square cover image or a placeholder if no imageBytes provided.
- *
- * @param {Uint8Array|string|null} imageBytes - Optional cover art data
- * @param {object} [style] - Additional className/style props
- */
 export default function SquareCover({ imageBytes, className = "" }) {
   return (
     <View

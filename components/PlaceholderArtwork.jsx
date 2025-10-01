@@ -1,15 +1,6 @@
 import { FontAwesome5 } from "@expo/vector-icons";
 import { Text, View } from "react-native";
 
-/**
- * Placeholder artwork icon for when no image is available.
- *
- * @param {object} props
- * @param {number} [props.size=20] - Icon size in px
- * @param {string} [props.label="No artwork"] - Text label under the icon
- * @param {string} [props.iconColor="#f87171"] - Icon color
- */
-
 export default function PlaceholderArtwork({
   size = 20,
   label = "No artwork",

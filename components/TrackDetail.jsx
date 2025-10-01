@@ -1,4 +1,3 @@
-// components/TrackDetail.jsx
 import SquareCover from "@/components/SquareCover";
 import { Pressable, Text, View } from "react-native";
 import { convertLengthToTime } from "../utils/convertLengthToTime";
@@ -10,11 +9,9 @@ export default function TrackDetail({ track, onPress }) {
       className="w-full relative rounded-lg overflow-hidden bg-white dark:bg-gray-900 border border-black/5 dark:border-white/10 shadow-sm active:opacity-95"
       style={{ height: 400 }}
     >
-      {/* Cover image */}
       <View className="absolute inset-0">
         <SquareCover imageBytes={track?.track_image} className="w-full h-full rounded-none" />
       </View>
-      {/* Title / artist */}
       <View
         className="
            top-0 left-0 right-0
@@ -33,8 +30,6 @@ export default function TrackDetail({ track, onPress }) {
             {track?.track_artist || "Unknown artist"}
           </Text>
         </View>
-
-        {/* Info pills */}
         <View
           className="
           flex-row gap-2 items-center justify-end

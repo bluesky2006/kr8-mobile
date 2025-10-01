@@ -1,4 +1,3 @@
-// components/PlaylistCard.jsx
 import SquareCover from "@/components/SquareCover";
 import { convertLengthToTime } from "@/utils/convertLengthToTime";
 import { getPlaylistTotalSeconds } from "@/utils/getPlaylistTotalSeconds";
@@ -24,12 +23,10 @@ export default function PlaylistCard({ playlist, onPress }) {
         active:opacity-90
       "
     >
-      {/* Header */}
       <View className="flex-row items-center justify-between mb-3">
         <Text className="text-lg font-semibold text-gray-900 dark:text-gray-100" numberOfLines={1}>
           {playlist?.playlist_name || "Untitled playlist"}
         </Text>
-
         <View className="flex-row gap-2">
           <View className="px-2 py-1 rounded-full bg-red-400 dark:bg-gray-800">
             <Text className="text-xs font-medium text-white dark:text-gray-300">
@@ -44,7 +41,6 @@ export default function PlaylistCard({ playlist, onPress }) {
         </View>
       </View>
 
-      {/* Covers row */}
       <View className="flex-row gap-2">
         {covers.length > 0 ? (
           covers.map((track, idx) => (
