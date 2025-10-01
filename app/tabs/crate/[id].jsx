@@ -5,7 +5,8 @@ import { getPlaylistTotalSeconds } from "@/utils/getPlaylistTotalSeconds";
 import { FontAwesome, FontAwesome5 } from "@expo/vector-icons";
 import { useMemo, useState } from "react";
 import { Dimensions, Pressable, SafeAreaView, Text, TextInput, View } from "react-native";
-import Carousel from "react-native-reanimated-carousel";
+import Swiper from "react-native-deck-swiper";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function CrateScreen() {
   const [query, setQuery] = useState("");
@@ -13,6 +14,7 @@ export default function CrateScreen() {
   const [showFaves, setShowFaves] = useState(false);
   const { currentPlaylist } = useCurrentPlaylist();
 
+  const insets = useSafeAreaInsets();
   const { width: windowWidth, height: windowHeight } = Dimensions.get("window");
 
   const playlist = currentPlaylist;
@@ -33,7 +35,8 @@ export default function CrateScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-white dark:bg-black">
-      <View className="p-4">
+      {/* Header Section */}
+      <View className="p-4 z-10 bg-white dark:bg-black">
         <Text className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
           {playlist?.playlist_name || "Playlist"}
         </Text>
@@ -41,6 +44,7 @@ export default function CrateScreen() {
           {tracks.length} {tracks.length === 1 ? "track" : "tracks"} • {totalLengthFormatted}
         </Text>
 
+        {/* Filters */}
         <View>
           <Pressable
             onPress={() => setShowFilters((prev) => !prev)}
@@ -106,38 +110,45 @@ export default function CrateScreen() {
           )}
         </View>
       </View>
-
-      {filteredTracks.length > 0 ? (
-        <Carousel
-          vertical
-          width={windowWidth}
-          height={windowHeight * 0.75} // shrink a bit so overlap is visible
-          data={filteredTracks}
-          renderItem={({ item }) => (
-            <View className="px-4">
-              <TrackDetail track={item} />
-            </View>
-          )}
-          pagingEnabled
-          loop={false}
-          mode="vertical-stack"
-          modeConfig={{
-            snapDirection: "left", // or "top" for vertical
-            stackInterval: 30, // how much overlap in px
-            scaleInterval: 0.08, // how much the behind cards shrink
-            rotateZDeg: 0, // tilt (set >0 if you want angled overlap)
-          }}
-        />
-      ) : (
-        <View className="py-20 items-center">
-          <FontAwesome5 name="compact-disc" size={32} color="#9CA3AF" />
-          <Text className="mt-3 text-gray-500 dark:text-gray-400">
-            {tracks.length === 0
-              ? "This playlist is empty"
-              : `No tracks in this playlist matching ‘${query}’.`}
-          </Text>
-        </View>
-      )}
+      {/* Swiper  */}
+      <View className="flex-1 relative">
+        {filteredTracks.length > 0 ? (
+          <Swiper
+            cards={filteredTracks}
+            renderCard={(track) =>
+              track ? (
+                <View style={{ width: windowWidth * 0.95, alignSelf: "center" }}>
+                  <TrackDetail track={track} />
+                </View>
+              ) : (
+                <View />
+              )
+            }
+            verticalSwipe
+            horizontalSwipe={false}
+            disableLeftSwipe
+            infinite
+            disableRightSwipe
+            showSecondCard
+            marginTop={100}
+            cardVerticalMargin={insets.bottom + 100}
+            stackSize={9}
+            stackSeparation={-50}
+            backgroundColor="transparent"
+            animateCardOpacity={false}
+            animateOverlayLabelsOpacity={false}
+          />
+        ) : (
+          <View className="py-20 items-center">
+            <FontAwesome5 name="compact-disc" size={32} color="#9CA3AF" />
+            <Text className="mt-3 text-gray-500 dark:text-gray-400">
+              {tracks.length === 0
+                ? "This playlist is empty"
+                : `No tracks in this playlist matching ‘${query}’.`}
+            </Text>
+          </View>
+        )}
+      </View>
     </SafeAreaView>
   );
 }
