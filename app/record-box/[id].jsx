@@ -8,14 +8,12 @@ import { FontAwesome5 } from "@expo/vector-icons";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useMemo, useState } from "react";
 import { Dimensions, Text, View } from "react-native";
-
 import Carousel from "react-native-reanimated-carousel";
-
-const { width: windowWidth, height: windowHeight } = Dimensions.get("window");
 
 export default function RecordBoxScreen() {
   const { payload } = useLocalSearchParams();
   const { setCurrentPlaylist } = useCurrentPlaylist();
+  const { width: windowWidth, height: windowHeight } = Dimensions.get("window");
 
   const playlist = useMemo(() => {
     try {
@@ -80,7 +78,7 @@ export default function RecordBoxScreen() {
         <Carousel
           vertical
           width={windowWidth}
-          height={windowHeight} // carousel fills the screen
+          height={windowHeight}
           data={filteredTracks}
           renderItem={({ item }) => (
             <View className="px-4">
