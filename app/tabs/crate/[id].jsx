@@ -96,7 +96,7 @@ export default function CrateScreen() {
         <View className="py-20 items-center">
           <FontAwesome5 name="compact-disc" size={32} color="#9CA3AF" />
           <Text className="mt-3 text-gray-500 dark:text-gray-400">
-            No tracks in this playlist yet.
+            No tracks in this playlist matching '{query}'.
           </Text>
         </View>
       )}

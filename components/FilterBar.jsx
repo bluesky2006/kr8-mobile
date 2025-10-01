@@ -1,40 +1,19 @@
 // components/FilterBar.jsx
 import { FontAwesome, FontAwesome5 } from "@expo/vector-icons";
-import { useEffect } from "react";
-import {
-  LayoutAnimation,
-  Platform,
-  Pressable,
-  Text,
-  TextInput,
-  UIManager,
-  View,
-} from "react-native";
+import { LayoutAnimation, Pressable, Text, TextInput, View } from "react-native";
 
 export default function FilterBar({
-  // optional toggle props
   showFilters,
   setShowFilters,
-
-  // state from parent
   showFaves,
   setShowFaves,
   query,
   setQuery,
-
-  // optional UI
   placeholder = "Search…",
   helperText,
   className = "",
-  style, // NEW — accept a style prop for outer container
+  style,
 }) {
-  // Enable LayoutAnimation on Android
-  useEffect(() => {
-    if (Platform.OS === "android" && UIManager.setLayoutAnimationEnabledExperimental) {
-      UIManager.setLayoutAnimationEnabledExperimental(true);
-    }
-  }, []);
-
   const isExpanded = typeof showFilters === "boolean" ? showFilters : true;
   const hasToggle = typeof setShowFilters === "function";
 

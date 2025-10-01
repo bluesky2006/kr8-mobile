@@ -5,7 +5,6 @@ import { useRouter } from "expo-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { FlatList, RefreshControl, Text, View } from "react-native";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
-
 import { fetchPlaylistsByUserId } from "../../api/api";
 
 export default function CratesView() {
@@ -16,11 +15,10 @@ export default function CratesView() {
   const [query, setQuery] = useState("");
   const { setCurrentPlaylist } = useCurrentPlaylist();
 
-  const insets = useSafeAreaInsets();
-  const router = useRouter();
-
   // Hardcoded userId for now
   const userId = 1;
+  const insets = useSafeAreaInsets();
+  const router = useRouter();
 
   const load = useCallback(async () => {
     try {
@@ -100,13 +98,15 @@ export default function CratesView() {
         )}
         ItemSeparatorComponent={() => <View style={{ height: 8 }} />}
         contentContainerStyle={{
-          paddingTop: 72, // height of your header (adjust!)
+          paddingTop: 72,
           paddingBottom: 8,
         }}
         refreshControl={<RefreshControl refreshing={!!loading} onRefresh={load} />}
         ListEmptyComponent={
-          <View style={{ padding: 16 }}>
-            <Text>{loading ? "Loading…" : error || "No playlists yet."}</Text>
+          <View className="py-20 items-center">
+            <Text className="mt-3 text-gray-500 dark:text-gray-400">
+              {loading ? "Loading…" : error || `No playlists matching '${query}'.`}{" "}
+            </Text>
           </View>
         }
       />
