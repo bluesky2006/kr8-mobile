@@ -1,4 +1,3 @@
-// app/record-box/[id].jsx
 import FilterBar from "@/components/FilterBar";
 import TrackDetail from "@/components/TrackDetail";
 import { useCurrentPlaylist } from "@/context/CurrentPlaylistContext";
@@ -7,10 +6,10 @@ import { getPlaylistTotalSeconds } from "@/utils/getPlaylistTotalSeconds";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useMemo, useState } from "react";
-import { Dimensions, Text, View } from "react-native";
+import { Dimensions, SafeAreaView, Text, View } from "react-native";
 import Carousel from "react-native-reanimated-carousel";
 
-export default function RecordBoxScreen() {
+export default function CrateScreen() {
   const { payload } = useLocalSearchParams();
   const { setCurrentPlaylist } = useCurrentPlaylist();
   const { width: windowWidth, height: windowHeight } = Dimensions.get("window");
@@ -47,7 +46,7 @@ export default function RecordBoxScreen() {
   }, [tracks, showFaves, query]);
 
   return (
-    <View className="flex-1 bg-white dark:bg-black">
+    <SafeAreaView className="flex-1 bg-white dark:bg-black">
       {/* Header */}
       <View className="p-4">
         <Text className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
@@ -101,6 +100,6 @@ export default function RecordBoxScreen() {
           </Text>
         </View>
       )}
-    </View>
+    </SafeAreaView>
   );
 }
