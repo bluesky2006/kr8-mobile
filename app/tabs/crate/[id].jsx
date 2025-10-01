@@ -3,7 +3,6 @@ import { useCurrentPlaylist } from "@/context/CurrentPlaylistContext";
 import { convertLengthToTime } from "@/utils/convertLengthToTime";
 import { getPlaylistTotalSeconds } from "@/utils/getPlaylistTotalSeconds";
 import { FontAwesome, FontAwesome5 } from "@expo/vector-icons";
-import { useLocalSearchParams } from "expo-router";
 import { useMemo, useState } from "react";
 import { Dimensions, Pressable, SafeAreaView, Text, TextInput, View } from "react-native";
 import Carousel from "react-native-reanimated-carousel";
@@ -13,11 +12,10 @@ export default function CrateScreen() {
   const [showFilters, setShowFilters] = useState(false);
   const [showFaves, setShowFaves] = useState(false);
   const { currentPlaylist } = useCurrentPlaylist();
-  const { id } = useLocalSearchParams();
 
   const { width: windowWidth, height: windowHeight } = Dimensions.get("window");
 
-  const playlist = currentPlaylist?.id === id ? currentPlaylist : null;
+  const playlist = currentPlaylist;
   const tracks = useMemo(() => playlist?.tracks ?? [], [playlist]);
   const totalLengthSeconds = useMemo(() => getPlaylistTotalSeconds(tracks), [tracks]);
   const totalLengthFormatted = convertLengthToTime(totalLengthSeconds);

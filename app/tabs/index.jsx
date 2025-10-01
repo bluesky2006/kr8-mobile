@@ -62,7 +62,6 @@ export default function CratesView() {
           backgroundColor: "white",
         }}
       >
-
         <View className="flex-row gap-4 items-center">
           <Pressable
             onPress={() => setShowFaves((v) => !v)}
@@ -83,7 +82,7 @@ export default function CratesView() {
               Favourites
             </Text>
           </Pressable>
-          
+
           <View className="flex-1">
             <TextInput
               value={query}
@@ -119,9 +118,6 @@ export default function CratesView() {
               setCurrentPlaylist(item);
               router.push({
                 pathname: "/tabs/crate/[id]",
-                params: {
-                  id: String(item?.id ?? item?.playlist_name),
-                },
               });
             }}
           />
