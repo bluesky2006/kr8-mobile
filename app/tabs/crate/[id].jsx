@@ -35,7 +35,6 @@ export default function CrateScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-white dark:bg-black">
-      {/* Header Section */}
       <View className="p-4 z-10 bg-white dark:bg-black">
         <Text className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
           {playlist?.playlist_name || "Playlist"}
@@ -44,7 +43,6 @@ export default function CrateScreen() {
           {tracks.length} {tracks.length === 1 ? "track" : "tracks"} • {totalLengthFormatted}
         </Text>
 
-        {/* Filters */}
         <View>
           <Pressable
             onPress={() => setShowFilters((prev) => !prev)}
@@ -110,7 +108,7 @@ export default function CrateScreen() {
           )}
         </View>
       </View>
-      {/* Swiper  */}
+
       <View className="flex-1 relative">
         {filteredTracks.length > 0 ? (
           <Swiper
