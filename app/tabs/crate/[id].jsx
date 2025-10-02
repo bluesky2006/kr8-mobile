@@ -127,6 +127,7 @@ export default function CrateScreen() {
             disableLeftSwipe
             infinite
             disableRightSwipe
+            // goBackToPreviousCardOnSwipeTop
             showSecondCard
             marginTop={100}
             cardVerticalMargin={insets.bottom + 100}
