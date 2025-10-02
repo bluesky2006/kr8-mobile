@@ -43,8 +43,8 @@ export default function PlaylistCard({ playlist, onPress }) {
 
       <View className="flex-row gap-2">
         {covers.length > 0 ? (
-          covers.map((track, idx) => (
-            <View key={track?.id ?? `${track?.track_title}-${idx}`} className="flex-1">
+          covers.map((track, index) => (
+            <View key={track?.id ?? `${track?.track_title}-${index}`} className="flex-1">
               <SquareCover imageBytes={track?.track_image} />
             </View>
           ))
