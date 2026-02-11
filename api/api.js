@@ -1,8 +1,19 @@
-export const baseURL = "http://100.106.142.112:3000/api";
+export const baseURL = "http://100.106.142.112:8787"; // your server host + port
+
+async function handle(res) {
+  if (!res.ok) {
+    const text = await res.text().catch(() => "");
+    throw new Error(text || `HTTP ${res.status}`);
+  }
+  return res.json();
+}
 
 export function fetchPlaylistsByUserId(userId) {
-  return fetch(`${baseURL}/users/${userId}/playlists/1/tracks`).then((res) => {
-    if (!res.ok) throw new Error("Failed to fetch user playlists");
-    return res.json();
-  });
+  // GET /users/:userId/playlists -> array of playlists
+  return fetch(`${baseURL}/users/${userId}/playlists`).then(handle);
+}
+
+export function fetchPlaylistById(playlistId) {
+  // GET /playlists/:playlistId -> playlist + playlist_tracks[]
+  return fetch(`${baseURL}/playlists/${playlistId}`).then(handle);
 }

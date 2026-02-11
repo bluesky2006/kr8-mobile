@@ -1,9 +1,25 @@
 import { Buffer } from "buffer";
 import { Image } from "react-native";
 
-export function renderImageFromUint8(imageData) {
+export function renderImageFromUint8(imageData, opts = {}) {
   if (!imageData) return null;
 
+  // New server format: { mime, base64 }
+  if (typeof imageData === "object" && imageData.base64) {
+    const mime = imageData.mime || "image/jpeg";
+    const uri = `data:${mime};base64,${imageData.base64}`;
+
+    return (
+      <Image
+        source={{ uri }}
+        className={opts.className ?? "w-full h-full"}
+        resizeMode={opts.resizeMode ?? "cover"}
+        accessibilityLabel="Track artwork"
+      />
+    );
+  }
+
+  // Legacy format: bytes (Uint8Array or {0:...,1:...})
   const bytes =
     imageData instanceof Uint8Array ? imageData : new Uint8Array(Object.values(imageData));
 
@@ -13,8 +29,8 @@ export function renderImageFromUint8(imageData) {
   return (
     <Image
       source={{ uri }}
-      className="w-full h-full"
-      resizeMode="cover"
+      className={opts.className ?? "w-full h-full"}
+      resizeMode={opts.resizeMode ?? "cover"}
       accessibilityLabel="Track artwork"
     />
   );

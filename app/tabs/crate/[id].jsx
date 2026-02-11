@@ -18,7 +18,7 @@ export default function CrateScreen() {
   const { width: windowWidth, height: windowHeight } = Dimensions.get("window");
 
   const playlist = currentPlaylist;
-  const tracks = useMemo(() => playlist?.tracks ?? [], [playlist]);
+  const tracks = useMemo(() => playlist?.tracks ?? playlist?.playlist_tracks ?? [], [playlist]);
   const totalLengthSeconds = useMemo(() => getPlaylistTotalSeconds(tracks), [tracks]);
   const totalLengthFormatted = convertLengthToTime(totalLengthSeconds);
 

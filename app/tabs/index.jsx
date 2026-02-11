@@ -5,7 +5,7 @@ import { useRouter } from "expo-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { FlatList, Pressable, RefreshControl, Text, TextInput, View } from "react-native";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
-import { fetchPlaylistsByUserId } from "../../api/api";
+import { fetchPlaylistById, fetchPlaylistsByUserId } from "../../api/api";
 
 export default function CratesView() {
   const [playlists, setPlaylists] = useState([]);
@@ -24,9 +24,19 @@ export default function CratesView() {
     try {
       setLoading(true);
       setError(null);
-      const data = await fetchPlaylistsByUserId(userId);
-      const playlistArray = data?.nestedData?.playlists ?? [];
-      setPlaylists(playlistArray);
+      const list = await fetchPlaylistsByUserId(userId); // array
+      // Hydrate each playlist with its tracks (so cards can show counts/covers)
+      const detailed = await Promise.all(
+        (list ?? []).map(async (p) => {
+          const full = await fetchPlaylistById(p.id);
+          return {
+            ...p,
+            // your UI expects `tracks`, server gives `playlist_tracks`
+            tracks: full.playlist_tracks ?? [],
+          };
+        })
+      );
+      setPlaylists(detailed);
     } catch (err) {
       setError(err?.message || "Failed to load playlists");
       setPlaylists([]);
@@ -118,6 +128,7 @@ export default function CratesView() {
               setCurrentPlaylist(item);
               router.push({
                 pathname: "/tabs/crate/[id]",
+                params: { id: String(item?.id) },
               });
             }}
           />

@@ -5,7 +5,7 @@ import { useMemo } from "react";
 import { Pressable, Text, View } from "react-native";
 
 export default function PlaylistCard({ playlist, onPress }) {
-  const tracks = useMemo(() => playlist?.tracks ?? [], [playlist]);
+  const tracks = useMemo(() => playlist?.playlist_tracks ?? playlist?.tracks ?? [], [playlist]);
   const covers = tracks.slice(0, 3);
 
   const totalLengthSeconds = useMemo(() => getPlaylistTotalSeconds(tracks), [tracks]);

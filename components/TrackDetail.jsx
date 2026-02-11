@@ -16,13 +16,13 @@ export default function TrackDetail({ track }) {
           bg-gray-400 dark:bg-black/50
         "
       >
-        {track?.PlaylistTrack?.playlist_position != null && (
+        {track?.playlist_position != null && (
           <View className="absolute top-2 right-2 bg-white/25 rounded-md py-1.5 px-2 items-center justify-center">
             <Text className="text-white text-xs font-inter-semibold">
-              # {track.PlaylistTrack.playlist_position}
+              # {track.playlist_position}
             </Text>
           </View>
-        )}
+        )}{" "}
         <View className="mb-3 pr-10">
           <Text
             className="text-white font-inter-semibold text-base leading-tight mb-1"
