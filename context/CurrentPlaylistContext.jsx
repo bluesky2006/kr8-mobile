@@ -4,7 +4,17 @@ const CurrentPlaylistContext = createContext();
 
 export function CurrentPlaylistProvider({ children }) {
   const [currentPlaylist, setCurrentPlaylist] = useState(null);
-  const value = useMemo(() => ({ currentPlaylist, setCurrentPlaylist }), [currentPlaylist]);
+
+  const setPlaylist = (playlist) => {
+    if (!playlist) return setCurrentPlaylist(null);
+    const tracks = playlist.tracks ?? playlist.playlist_tracks ?? [];
+    setCurrentPlaylist({ ...playlist, tracks });
+  };
+
+  const value = useMemo(
+    () => ({ currentPlaylist, setCurrentPlaylist: setPlaylist }),
+    [currentPlaylist]
+  );
   return (
     <CurrentPlaylistContext.Provider value={value}>{children}</CurrentPlaylistContext.Provider>
   );
