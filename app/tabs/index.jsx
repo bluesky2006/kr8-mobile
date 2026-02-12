@@ -3,9 +3,14 @@ import { useCurrentPlaylist } from "@/context/CurrentPlaylistContext";
 import { FontAwesome } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { FlatList, Pressable, RefreshControl, Text, TextInput, View } from "react-native";
+import { Alert, FlatList, Pressable, RefreshControl, Text, TextInput, View } from "react-native";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
-import { fetchPlaylistById, fetchPlaylistsByUserId } from "../../api/api";
+import {
+  deletePlaylist,
+  fetchPlaylistById,
+  fetchPlaylistsByUserId,
+  setPlaylistFavourite,
+} from "../../api/api";
 
 export default function CratesView() {
   const [playlists, setPlaylists] = useState([]);
@@ -60,7 +65,11 @@ export default function CratesView() {
   }, [playlists, showFaves, query]);
 
   return (
-    <SafeAreaView style={{ flex: 1 }} className="bg-white dark:bg-black">
+    <SafeAreaView
+      edges={["top", "left", "right"]}
+      style={{ flex: 1 }}
+      className="bg-white dark:bg-black"
+    >
       <View
         style={{
           position: "absolute",
@@ -126,14 +135,35 @@ export default function CratesView() {
             playlist={item}
             onPress={() => {
               setCurrentPlaylist(item);
-              router.push({
-                pathname: "/tabs/crate/[id]",
-                params: { id: String(item?.id) },
-              });
+              router.push({ pathname: "/tabs/crate/[id]", params: { id: String(item?.id) } });
+            }}
+            onToggleFavourite={async () => {
+              const next = !item.favourite;
+              await setPlaylistFavourite(item.id, next);
+              setPlaylists((prev) =>
+                prev.map((p) => (p.id === item.id ? { ...p, favourite: next } : p))
+              );
+            }}
+            onDelete={() => {
+              Alert.alert(
+                "Delete playlist?",
+                `Delete '${item.playlist_name}' and all its tracks?`,
+                [
+                  { text: "Cancel", style: "cancel" },
+                  {
+                    text: "Delete",
+                    style: "destructive",
+                    onPress: async () => {
+                      await deletePlaylist(item.id);
+                      setPlaylists((prev) => prev.filter((p) => p.id !== item.id));
+                    },
+                  },
+                ]
+              );
             }}
           />
         )}
-        ItemSeparatorComponent={() => <View style={{ height: 8 }} />}
+        ItemSeparatorComponent={() => <View style={{ height: 4 }} />}
         contentContainerStyle={{
           paddingTop: 72,
           paddingBottom: 8,
