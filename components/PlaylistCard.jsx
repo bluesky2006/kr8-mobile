@@ -1,21 +1,24 @@
 import SquareCover from "@/components/SquareCover";
 import { convertLengthToTime } from "@/utils/convertLengthToTime";
 import { getPlaylistTotalSeconds } from "@/utils/getPlaylistTotalSeconds";
+import { FontAwesome } from "@expo/vector-icons";
 import { useMemo } from "react";
 import { Pressable, Text, View } from "react-native";
 
-export default function PlaylistCard({ playlist, onPress }) {
+export default function PlaylistCard({ playlist, onPress, onToggleFavourite, onDelete }) {
   const tracks = useMemo(() => playlist?.playlist_tracks ?? playlist?.tracks ?? [], [playlist]);
   const covers = tracks.slice(0, 3);
 
   const totalLengthSeconds = useMemo(() => getPlaylistTotalSeconds(tracks), [tracks]);
   const totalLengthFormatted = convertLengthToTime(totalLengthSeconds);
 
+  const isFave = !!playlist?.favourite;
+
   return (
     <Pressable
       onPress={onPress}
       className="
-        mx-4 mb-4 p-4
+        mx-4 mb-4 py-3 px-4
         rounded-lg
         bg-white dark:bg-gray-900
         border border-black/5 dark:border-white/10
@@ -53,6 +56,29 @@ export default function PlaylistCard({ playlist, onPress }) {
             <SquareCover />
           </View>
         )}
+      </View>
+
+      {/* actions row under artwork */}
+      <View className="mt-3 flex-row items-center justify-between">
+        <Pressable
+          onPress={(e) => {
+            e.stopPropagation?.();
+            onToggleFavourite?.();
+          }}
+          hitSlop={10}
+        >
+          <FontAwesome name={isFave ? "star" : "star-o"} size={18} color="#f87171" />
+        </Pressable>
+
+        <Pressable
+          onPress={(e) => {
+            e.stopPropagation?.();
+            onDelete?.();
+          }}
+          hitSlop={10}
+        >
+          <FontAwesome name="trash" size={18} color="#f87171" />
+        </Pressable>
       </View>
     </Pressable>
   );
