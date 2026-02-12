@@ -114,6 +114,20 @@ export default function CrateScreen() {
         {filteredTracks.length > 0 ? (
           <Swiper
             cards={filteredTracks}
+            verticalSwipe
+            horizontalSwipe={false}
+            disableLeftSwipe
+            infinite
+            disableRightSwipe
+            // goBackToPreviousCardOnSwipeTop
+            showSecondCard
+            marginTop={100}
+            cardVerticalMargin={insets.bottom + 100}
+            stackSize={9}
+            stackSeparation={-50}
+            backgroundColor="transparent"
+            animateCardOpacity={false}
+            animateOverlayLabelsOpacity={false}
             renderCard={(track) =>
               track ? (
                 <View style={{ width: windowWidth * 0.95, alignSelf: "center" }}>
@@ -140,20 +154,6 @@ export default function CrateScreen() {
                 <View />
               )
             }
-            verticalSwipe
-            horizontalSwipe={false}
-            disableLeftSwipe
-            infinite
-            disableRightSwipe
-            // goBackToPreviousCardOnSwipeTop
-            showSecondCard
-            marginTop={100}
-            cardVerticalMargin={insets.bottom + 100}
-            stackSize={9}
-            stackSeparation={-50}
-            backgroundColor="transparent"
-            animateCardOpacity={false}
-            animateOverlayLabelsOpacity={false}
           />
         ) : (
           <View className="py-20 items-center">
