@@ -1,3 +1,4 @@
+import { deleteTrack, fetchPlaylistById, setTrackFavourite } from "@/api/api";
 import TrackDetail from "@/components/TrackDetail";
 import { useCurrentPlaylist } from "@/context/CurrentPlaylistContext";
 import { convertLengthToTime } from "@/utils/convertLengthToTime";
@@ -12,10 +13,10 @@ export default function CrateScreen() {
   const [query, setQuery] = useState("");
   const [showFilters, setShowFilters] = useState(false);
   const [showFaves, setShowFaves] = useState(false);
-  const { currentPlaylist } = useCurrentPlaylist();
+  const { currentPlaylist, setCurrentPlaylist } = useCurrentPlaylist();
 
   const insets = useSafeAreaInsets();
-  const { width: windowWidth, height: windowHeight } = Dimensions.get("window");
+  const { width: windowWidth } = Dimensions.get("window");
 
   const playlist = currentPlaylist;
   const tracks = useMemo(() => playlist?.tracks ?? playlist?.playlist_tracks ?? [], [playlist]);
@@ -116,7 +117,24 @@ export default function CrateScreen() {
             renderCard={(track) =>
               track ? (
                 <View style={{ width: windowWidth * 0.95, alignSelf: "center" }}>
-                  <TrackDetail track={track} />
+                  <TrackDetail
+                    track={track}
+                    onToggleFavourite={async () => {
+                      const next = !track.favourite;
+                      await setTrackFavourite(track.id, next);
+                      setCurrentPlaylist({
+                        ...playlist,
+                        tracks: (playlist.tracks ?? []).map((t) =>
+                          t.id === track.id ? { ...t, favourite: next } : t
+                        ),
+                      });
+                    }}
+                    onDelete={async () => {
+                      await deleteTrack(track.id);
+                      const fresh = await fetchPlaylistById(playlist.id);
+                      setCurrentPlaylist(fresh);
+                    }}
+                  />
                 </View>
               ) : (
                 <View />
