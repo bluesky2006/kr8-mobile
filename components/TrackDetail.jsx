@@ -16,7 +16,7 @@ export default function TrackDetail({ track, onToggleFavourite, onDelete }) {
 
   return (
     <Pressable
-      className="w-full relative rounded-2xl overflow-hidden bg-white dark:bg-gray-900 border border-black/5 dark:border-white/10 shadow-sm aspect-square"
+      className="w-full relative rounded-md overflow-hidden bg-white dark:bg-gray-900 border border-black/5 dark:border-white/10 shadow-sm aspect-square"
       onPressIn={(e) => {
         start.current = {
           x: e.nativeEvent.pageX,
