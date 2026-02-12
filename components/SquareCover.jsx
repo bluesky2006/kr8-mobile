@@ -4,7 +4,7 @@ import { View } from "react-native";
 
 export default function SquareCover({ imageBytes }) {
   return (
-    <View className={"aspect-square rounded-xl overflow-hidden bg-gray-200 dark:bg-gray-800"}>
+    <View className={"aspect-square overflow-hidden bg-gray-200 dark:bg-gray-800"}>
       {imageBytes ? (
         renderImageFromUint8(imageBytes, {
           className: "w-full h-full",
