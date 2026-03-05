@@ -57,8 +57,8 @@ export default function CratesView() {
   const filteredPlaylists = useMemo(() => {
     const trimmedQuery = query.trim().toLowerCase();
     return playlists.filter((playlist) => {
-      if (!trimmedQuery) return true;
       if (showFaves && !playlist?.favourite) return false;
+      if (!trimmedQuery) return true;
       const name = (playlist?.playlist_name ?? "").toLowerCase();
       return name.includes(trimmedQuery);
     });
