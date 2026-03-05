@@ -1,11 +1,20 @@
-export const baseURL = "http://100.106.142.112:8787"; // your server host + port
+const envBaseURL = process.env.EXPO_PUBLIC_API_BASE_URL?.trim();
+export const baseURL = (envBaseURL || "http://100.106.142.112:8787").replace(/\/+$/, "");
 
 async function handle(res) {
   if (!res.ok) {
     const text = await res.text().catch(() => "");
     throw new Error(text || `HTTP ${res.status}`);
   }
-  return res.json();
+  if (res.status === 204) return null;
+
+  const contentType = res.headers.get("content-type") ?? "";
+  if (contentType.includes("application/json")) {
+    return res.json();
+  }
+
+  const text = await res.text().catch(() => "");
+  return text || null;
 }
 
 export function fetchPlaylistsByUserId(userId) {
