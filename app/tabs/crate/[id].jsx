@@ -6,9 +6,9 @@ import { getPlaylistTotalSeconds } from "@/utils/getPlaylistTotalSeconds";
 import { FontAwesome, FontAwesome5 } from "@expo/vector-icons";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useMemo, useState } from "react";
-import { Dimensions, Pressable, SafeAreaView, Text, TextInput, View } from "react-native";
+import { Dimensions, Pressable, Text, TextInput, View } from "react-native";
 import Swiper from "react-native-deck-swiper";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function CrateScreen() {
   const [query, setQuery] = useState("");
