@@ -10,7 +10,7 @@ export default function PlaylistCard({ playlist, onPress, onToggleFavourite, onD
   const covers = tracks.slice(0, 3);
 
   const totalLengthSeconds = useMemo(() => getPlaylistTotalSeconds(tracks), [tracks]);
-  const totalLengthFormatted = convertLengthToTime(totalLengthSeconds);
+  const totalLengthFormatted = convertLengthToTime(totalLengthSeconds) ?? "0:00";
 
   const isFave = !!playlist?.favourite;
 
