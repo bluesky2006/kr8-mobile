@@ -6,7 +6,7 @@ import { getPlaylistTotalSeconds } from "@/utils/getPlaylistTotalSeconds";
 import { FontAwesome, FontAwesome5 } from "@expo/vector-icons";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useMemo, useState } from "react";
-import { Dimensions, Pressable, Text, TextInput, View } from "react-native";
+import { Alert, Dimensions, Pressable, Text, TextInput, View } from "react-native";
 import Swiper from "react-native-deck-swiper";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -181,9 +181,22 @@ export default function CrateScreen() {
                       });
                     }}
                     onDelete={async () => {
-                      await deleteTrack(track.id);
-                      const fresh = await fetchPlaylistById(playlist.id);
-                      setCurrentPlaylist(fresh);
+                      Alert.alert(
+                        "Delete track?",
+                        `Delete '${track?.track_title || "this track"}' from this playlist?`,
+                        [
+                          { text: "Cancel", style: "cancel" },
+                          {
+                            text: "Delete",
+                            style: "destructive",
+                            onPress: async () => {
+                              await deleteTrack(track.id);
+                              const fresh = await fetchPlaylistById(playlist.id);
+                              setCurrentPlaylist(fresh);
+                            },
+                          },
+                        ]
+                      );
                     }}
                   />
                 </View>
