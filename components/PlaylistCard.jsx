@@ -36,10 +36,13 @@ export default function PlaylistCard({ playlist, onPress, onToggleFavourite, onD
       "
     >
       <View className="flex-row items-center justify-between mb-3">
-        <Text className="text-lg font-semibold text-gray-900 dark:text-gray-100" numberOfLines={1}>
+        <Text
+          className="flex-1 mr-3 text-lg font-semibold text-gray-900 dark:text-gray-100"
+          numberOfLines={1}
+        >
           {playlist?.playlist_name || "Untitled playlist"}
         </Text>
-        <View className="flex-row gap-2">
+        <View className="flex-row gap-2 shrink-0">
           <View className="px-2 py-1 rounded-full bg-red-400 dark:bg-gray-800">
             <Text className="text-xs font-medium text-white dark:text-gray-300">
               {tracks.length} {tracks.length === 1 ? "track" : "tracks"}
