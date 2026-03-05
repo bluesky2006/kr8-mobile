@@ -3,7 +3,6 @@ import { useColorScheme } from "@/hooks/useColorScheme";
 import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
-import { View } from "react-native";
 import "react-native-reanimated";
 import "../global.css";
 
@@ -16,8 +15,6 @@ export default function RootLayout() {
   if (!loaded) {
     return null;
   }
-
-  if (!loaded) return <View />;
 
   return (
     <CurrentPlaylistProvider>
