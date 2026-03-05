@@ -2,15 +2,24 @@ import SquareCover from "@/components/SquareCover";
 import { convertLengthToTime } from "@/utils/convertLengthToTime";
 import { getPlaylistTotalSeconds } from "@/utils/getPlaylistTotalSeconds";
 import { FontAwesome } from "@expo/vector-icons";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Pressable, Text, View } from "react-native";
 
 export default function PlaylistCard({ playlist, onPress, onToggleFavourite, onDelete }) {
+  const [coversRowWidth, setCoversRowWidth] = useState(0);
   const tracks = useMemo(() => playlist?.playlist_tracks ?? playlist?.tracks ?? [], [playlist]);
-  const covers = tracks.slice(0, 3);
+  const covers = tracks.slice(0, 6);
 
   const totalLengthSeconds = useMemo(() => getPlaylistTotalSeconds(tracks), [tracks]);
   const totalLengthFormatted = convertLengthToTime(totalLengthSeconds) ?? "0:00";
+  const overlapRatio = 0.34;
+  const coversCount = covers.length;
+  const coverWidth = useMemo(() => {
+    if (coversCount <= 0 || coversRowWidth <= 0) return 64;
+    if (coversCount === 1) return coversRowWidth;
+    return coversRowWidth / (coversCount - (coversCount - 1) * overlapRatio);
+  }, [coversCount, coversRowWidth]);
+  const overlapOffset = coverWidth * overlapRatio;
 
   const isFave = !!playlist?.favourite;
 
@@ -44,10 +53,18 @@ export default function PlaylistCard({ playlist, onPress, onToggleFavourite, onD
         </View>
       </View>
 
-      <View className="flex-row gap-2">
+      <View className="flex-row items-center py-1" onLayout={(e) => setCoversRowWidth(e.nativeEvent.layout.width)}>
         {covers.length > 0 ? (
           covers.map((track, index) => (
-            <View key={track?.id ?? `${track?.track_title}-${index}`} className="flex-1">
+            <View
+              key={track?.id ?? `${track?.track_title}-${index}`}
+              className="shrink-0"
+              style={{
+                width: coverWidth,
+                marginLeft: index === 0 ? 0 : -overlapOffset,
+                zIndex: covers.length - index,
+              }}
+            >
               <SquareCover imageBytes={track?.track_image} />
             </View>
           ))
