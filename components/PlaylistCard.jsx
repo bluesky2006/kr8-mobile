@@ -3,7 +3,7 @@ import { convertLengthToTime } from "@/utils/convertLengthToTime";
 import { getPlaylistTotalSeconds } from "@/utils/getPlaylistTotalSeconds";
 import { FontAwesome } from "@expo/vector-icons";
 import { useMemo, useState } from "react";
-import { Pressable, Text, View } from "react-native";
+import { Platform, Pressable, Text, View } from "react-native";
 
 export default function PlaylistCard({ playlist, onPress, onToggleFavourite, onDelete }) {
   const [coversRowWidth, setCoversRowWidth] = useState(0);
@@ -53,7 +53,10 @@ export default function PlaylistCard({ playlist, onPress, onToggleFavourite, onD
         </View>
       </View>
 
-      <View className="flex-row items-center py-1" onLayout={(e) => setCoversRowWidth(e.nativeEvent.layout.width)}>
+      <View
+        className="flex-row items-center py-1"
+        onLayout={(e) => setCoversRowWidth(e.nativeEvent.layout.width)}
+      >
         {covers.length > 0 ? (
           covers.map((track, index) => (
             <View
@@ -63,9 +66,34 @@ export default function PlaylistCard({ playlist, onPress, onToggleFavourite, onD
                 width: coverWidth,
                 marginLeft: index === 0 ? 0 : -overlapOffset,
                 zIndex: covers.length - index,
+                ...(index < covers.length - 1
+                  ? {
+                      shadowColor: "#000",
+                      shadowOpacity: 0.16,
+                      shadowRadius: 0,
+                      shadowOffset: { width: 1, height: 0 },
+                      elevation: 0,
+                    }
+                  : null),
               }}
             >
-              <SquareCover imageBytes={track?.track_image} />
+              <View style={{ borderRadius: 1, overflow: "hidden" }}>
+                <SquareCover imageBytes={track?.track_image} />
+                {index < covers.length - 1 && (
+                  <View
+                    pointerEvents="none"
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      bottom: 0,
+                      right: 0,
+                      width: 4,
+                      backgroundColor: "rgba(0,0,0,0.10)",
+                      opacity: Platform.OS === "android" ? 1 : 0.65,
+                    }}
+                  />
+                )}
+              </View>
             </View>
           ))
         ) : (
