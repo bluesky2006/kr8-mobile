@@ -25,10 +25,10 @@ export default function TrackDetail({ track, onToggleFavourite, onDelete }) {
           hitSlop={8}
           className="absolute top-2 right-2 z-10 flex-row items-center gap-1 rounded-sm bg-red-400 py-1.5 px-2"
         >
-          <Text className="text-white text-base font-inter-semibold">
+          <FontAwesome name={expanded ? "chevron-up" : "chevron-down"} size={10} color="#fff" />
+          <Text className="text-white text-base font-inter-semibold pl-1">
             # {track.playlist_position}
           </Text>
-          <FontAwesome name={expanded ? "chevron-up" : "chevron-down"} size={10} color="#fff" />
         </Pressable>
       )}
 
