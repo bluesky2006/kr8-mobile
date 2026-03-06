@@ -1,6 +1,7 @@
 import PlaylistCard from "@/components/PlaylistCard";
 import { useCurrentPlaylist } from "@/context/CurrentPlaylistContext";
 import { FontAwesome } from "@expo/vector-icons";
+import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { useRouter } from "expo-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Alert, FlatList, Pressable, RefreshControl, Text, TextInput, View } from "react-native";
@@ -11,6 +12,7 @@ import {
   fetchPlaylistsByUserId,
   setPlaylistFavourite,
 } from "../../api/api";
+import { readCachedPlaylistsSnapshot, saveCachedPlaylists } from "../../utils/playlistCache";
 
 export default function CratesView() {
   const [playlists, setPlaylists] = useState([]);
@@ -18,11 +20,14 @@ export default function CratesView() {
   const [error, setError] = useState(null);
   const [showFaves, setShowFaves] = useState(false);
   const [query, setQuery] = useState("");
+  const [showingOfflineCache, setShowingOfflineCache] = useState(false);
+  const [cacheUpdatedAt, setCacheUpdatedAt] = useState(null);
   const { setCurrentPlaylist } = useCurrentPlaylist();
 
   // Hardcoded userId for now
   const userId = 1;
   const insets = useSafeAreaInsets();
+  const tabBarHeight = useBottomTabBarHeight();
   const router = useRouter();
 
   const load = useCallback(async () => {
@@ -42,9 +47,22 @@ export default function CratesView() {
         })
       );
       setPlaylists(detailed);
+      const snapshot = await saveCachedPlaylists(detailed);
+      setShowingOfflineCache(false);
+      setCacheUpdatedAt(snapshot.updatedAt);
     } catch (err) {
-      setError(err?.message || "Failed to load playlists");
-      setPlaylists([]);
+      const snapshot = await readCachedPlaylistsSnapshot();
+      if (snapshot.playlists.length > 0) {
+        setPlaylists(snapshot.playlists);
+        setError("You are offline. Showing cached playlists.");
+        setShowingOfflineCache(true);
+        setCacheUpdatedAt(snapshot.updatedAt);
+      } else {
+        setError(err?.message || "Failed to load playlists");
+        setPlaylists([]);
+        setShowingOfflineCache(false);
+        setCacheUpdatedAt(null);
+      }
     } finally {
       setLoading(false);
     }
@@ -63,6 +81,18 @@ export default function CratesView() {
       return name.includes(trimmedQuery);
     });
   }, [playlists, showFaves, query]);
+
+  const formattedCacheUpdatedAt = useMemo(() => {
+    if (!cacheUpdatedAt) return null;
+
+    const date = new Date(cacheUpdatedAt);
+    if (Number.isNaN(date.getTime())) return null;
+
+    return new Intl.DateTimeFormat(undefined, {
+      dateStyle: "medium",
+      timeStyle: "short",
+    }).format(date);
+  }, [cacheUpdatedAt]);
 
   return (
     <SafeAreaView
@@ -140,9 +170,13 @@ export default function CratesView() {
             onToggleFavourite={async () => {
               const next = !item.favourite;
               await setPlaylistFavourite(item.id, next);
-              setPlaylists((prev) =>
-                prev.map((p) => (p.id === item.id ? { ...p, favourite: next } : p))
-              );
+              setPlaylists((prev) => {
+                const nextPlaylists = prev.map((p) =>
+                  p.id === item.id ? { ...p, favourite: next } : p
+                );
+                void saveCachedPlaylists(nextPlaylists);
+                return nextPlaylists;
+              });
             }}
             onDelete={() => {
               Alert.alert(
@@ -155,7 +189,11 @@ export default function CratesView() {
                     style: "destructive",
                     onPress: async () => {
                       await deletePlaylist(item.id);
-                      setPlaylists((prev) => prev.filter((p) => p.id !== item.id));
+                      setPlaylists((prev) => {
+                        const nextPlaylists = prev.filter((p) => p.id !== item.id);
+                        void saveCachedPlaylists(nextPlaylists);
+                        return nextPlaylists;
+                      });
                     },
                   },
                 ]
@@ -166,7 +204,7 @@ export default function CratesView() {
         ItemSeparatorComponent={() => <View style={{ height: 4 }} />}
         contentContainerStyle={{
           paddingTop: 72,
-          paddingBottom: 8,
+          paddingBottom: showingOfflineCache ? tabBarHeight + 52 : 8,
         }}
         refreshControl={<RefreshControl refreshing={loading} onRefresh={load} />}
         ListEmptyComponent={
@@ -177,6 +215,26 @@ export default function CratesView() {
           </View>
         }
       />
+
+      {showingOfflineCache && (
+        <View
+          pointerEvents="none"
+          style={{
+            position: "absolute",
+            left: 12,
+            right: 12,
+            bottom: 8,
+            zIndex: 30,
+          }}
+        >
+          <View className="rounded-xl border border-amber-300/80 bg-amber-100/95 px-3 py-2 dark:border-amber-500/60 dark:bg-amber-900/90">
+            <Text className="text-xs font-medium text-amber-800 dark:text-amber-100">
+              Offline mode • showing cached playlists
+              {formattedCacheUpdatedAt ? ` • updated ${formattedCacheUpdatedAt}` : ""}
+            </Text>
+          </View>
+        </View>
+      )}
     </SafeAreaView>
   );
 }
