@@ -1,6 +1,6 @@
 import SquareCover from "@/components/SquareCover";
 import { FontAwesome } from "@expo/vector-icons";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { Pressable, Text, View } from "react-native";
 import { convertLengthToTime } from "../utils/convertLengthToTime";
 import { InfoPill } from "./InfoPill";
@@ -10,44 +10,31 @@ export default function TrackDetail({ track, onToggleFavourite, onDelete }) {
 
   const [expanded, setExpanded] = useState(false);
 
-  // tap-vs-swipe guard
-  const start = useRef({ x: 0, y: 0 });
-  const TAP_SLOP = 10; // px; increase to 12–16 if you still get accidental taps
-
   return (
-    <Pressable
-      className="w-full relative rounded-md overflow-hidden bg-white dark:bg-gray-900 border border-black/5 dark:border-white/10 shadow-sm aspect-square"
-      onPressIn={(e) => {
-        start.current = {
-          x: e.nativeEvent.pageX,
-          y: e.nativeEvent.pageY,
-        };
-      }}
-      onPressOut={(e) => {
-        const dx = Math.abs(e.nativeEvent.pageX - start.current.x);
-        const dy = Math.abs(e.nativeEvent.pageY - start.current.y);
-
-        // Only toggle if it was a genuine tap (not a swipe)
-        if (dx <= TAP_SLOP && dy <= TAP_SLOP) {
-          setExpanded((v) => !v);
-        }
-      }}
-    >
+    <View className="w-full relative rounded-md overflow-hidden bg-white dark:bg-gray-900 border border-black/5 dark:border-white/10 shadow-sm aspect-square">
       <View className="absolute inset-0">
         <SquareCover imageBytes={track?.track_image} />
       </View>
 
+      {track?.playlist_position != null && (
+        <Pressable
+          onPress={(e) => {
+            e.stopPropagation?.();
+            setExpanded((v) => !v);
+          }}
+          hitSlop={8}
+          className="absolute top-2 right-2 z-10 flex-row items-center gap-1 rounded-sm bg-red-400 py-1.5 px-2"
+        >
+          <Text className="text-white text-base font-inter-semibold">
+            # {track.playlist_position}
+          </Text>
+          <FontAwesome name={expanded ? "chevron-up" : "chevron-down"} size={10} color="#fff" />
+        </Pressable>
+      )}
+
       {/* Only show detail overlay when expanded */}
       {expanded && (
         <View className="top-0 left-0 right-0 p-4 bg-red-400 dark:bg-black/50">
-          {track?.playlist_position != null && (
-            <View className="absolute top-2 right-2 bg-white/25 rounded-md py-1.5 px-2 items-center justify-center">
-              <Text className="text-white text-xs font-inter-semibold">
-                # {track.playlist_position}
-              </Text>
-            </View>
-          )}
-
           <View className="mb-3 pr-10">
             <Text
               className="text-white font-inter-semibold text-base font-medium leading-tight mb-1"
@@ -93,6 +80,6 @@ export default function TrackDetail({ track, onToggleFavourite, onDelete }) {
           </View>
         </View>
       )}
-    </Pressable>
+    </View>
   );
 }
