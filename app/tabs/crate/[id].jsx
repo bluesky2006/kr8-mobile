@@ -3,6 +3,7 @@ import TrackDetail from "@/components/TrackDetail";
 import { useCurrentPlaylist } from "@/context/CurrentPlaylistContext";
 import { convertLengthToTime } from "@/utils/convertLengthToTime";
 import { getPlaylistTotalSeconds } from "@/utils/getPlaylistTotalSeconds";
+import { readCachedPlaylistById, upsertCachedPlaylist } from "@/utils/playlistCache";
 import { FontAwesome, FontAwesome5 } from "@expo/vector-icons";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useMemo, useState } from "react";
@@ -21,7 +22,8 @@ export default function CrateScreen() {
   const routePlaylistId = Number(Array.isArray(params?.id) ? params.id[0] : params?.id);
 
   const insets = useSafeAreaInsets();
-  const { width: windowWidth } = Dimensions.get("window");
+  const { width: windowWidth, height: windowHeight } = Dimensions.get("window");
+  const verticalSwipeThreshold = Math.max(60, Math.round(windowHeight * 0.12));
 
   const playlist = currentPlaylist;
   const tracks = useMemo(() => playlist?.tracks ?? playlist?.playlist_tracks ?? [], [playlist]);
@@ -43,10 +45,19 @@ export default function CrateScreen() {
         setLoadingPlaylist(true);
         setPlaylistError(null);
         const fresh = await fetchPlaylistById(routePlaylistId);
-        if (!isCancelled) setCurrentPlaylist(fresh);
-      } catch (error) {
         if (!isCancelled) {
-          setPlaylistError(error?.message || "Failed to load playlist");
+          setCurrentPlaylist(fresh);
+          await upsertCachedPlaylist(fresh);
+        }
+      } catch (error) {
+        const cached = await readCachedPlaylistById(routePlaylistId);
+        if (!isCancelled) {
+          if (cached) {
+            setCurrentPlaylist(cached);
+            setPlaylistError("You are offline. Showing cached playlist.");
+          } else {
+            setPlaylistError(error?.message || "Failed to load playlist");
+          }
         }
       } finally {
         if (!isCancelled) setLoadingPlaylist(false);
@@ -162,6 +173,7 @@ export default function CrateScreen() {
             cardVerticalMargin={insets.bottom + 100}
             stackSize={stackSize}
             stackSeparation={-50}
+            verticalThreshold={verticalSwipeThreshold}
             backgroundColor="transparent"
             animateCardOpacity={false}
             animateOverlayLabelsOpacity={false}
@@ -173,12 +185,14 @@ export default function CrateScreen() {
                     onToggleFavourite={async () => {
                       const next = !track.favourite;
                       await setTrackFavourite(track.id, next);
-                      setCurrentPlaylist({
+                      const updatedPlaylist = {
                         ...playlist,
                         tracks: (playlist.tracks ?? []).map((t) =>
                           t.id === track.id ? { ...t, favourite: next } : t
                         ),
-                      });
+                      };
+                      setCurrentPlaylist(updatedPlaylist);
+                      await upsertCachedPlaylist(updatedPlaylist);
                     }}
                     onDelete={async () => {
                       Alert.alert(
@@ -193,6 +207,7 @@ export default function CrateScreen() {
                               await deleteTrack(track.id);
                               const fresh = await fetchPlaylistById(playlist.id);
                               setCurrentPlaylist(fresh);
+                              await upsertCachedPlaylist(fresh);
                             },
                           },
                         ]
