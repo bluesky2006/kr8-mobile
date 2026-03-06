@@ -6,7 +6,7 @@ import { getPlaylistTotalSeconds } from "@/utils/getPlaylistTotalSeconds";
 import { readCachedPlaylistById, upsertCachedPlaylist } from "@/utils/playlistCache";
 import { FontAwesome, FontAwesome5 } from "@expo/vector-icons";
 import { useLocalSearchParams } from "expo-router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Alert, Dimensions, Pressable, Text, TextInput, View } from "react-native";
 import Swiper from "react-native-deck-swiper";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
@@ -17,6 +17,8 @@ export default function CrateScreen() {
   const [showFaves, setShowFaves] = useState(false);
   const [loadingPlaylist, setLoadingPlaylist] = useState(false);
   const [playlistError, setPlaylistError] = useState(null);
+  const [currentCardIndex, setCurrentCardIndex] = useState(0);
+  const swiperRef = useRef(null);
   const { currentPlaylist, setCurrentPlaylist } = useCurrentPlaylist();
   const params = useLocalSearchParams();
   const routePlaylistId = Number(Array.isArray(params?.id) ? params.id[0] : params?.id);
@@ -83,12 +85,34 @@ export default function CrateScreen() {
   }, [tracks, showFaves, query]);
   const stackSize = Math.min(9, filteredTracks.length);
 
+  useEffect(() => {
+    setCurrentCardIndex(0);
+  }, [filteredTracks]);
+
+  const canJumpToStart = filteredTracks.length > 1 && currentCardIndex !== 0;
+
   return (
     <SafeAreaView className="flex-1 bg-white dark:bg-black">
       <View className="p-4 z-10 bg-white dark:bg-black">
-        <Text className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
-          {playlist?.playlist_name || "Playlist"}
-        </Text>
+        <View className="flex-row items-center justify-between gap-3">
+          <Text className="flex-1 text-2xl font-semibold text-gray-900 dark:text-gray-100">
+            {playlist?.playlist_name || "Playlist"}
+          </Text>
+          {filteredTracks.length > 1 && (
+            <Pressable
+              onPress={() => {
+                swiperRef.current?.jumpToCardIndex(0);
+                setCurrentCardIndex(0);
+              }}
+              disabled={!canJumpToStart}
+              hitSlop={8}
+              className="h-9 w-9 items-center justify-center rounded-full bg-red-400"
+              style={{ opacity: canJumpToStart ? 1 : 0.5 }}
+            >
+              <FontAwesome5 name="undo-alt" size={14} color="#fff" />
+            </Pressable>
+          )}
+        </View>
         <Text className="text-sm text-gray-500 dark:text-gray-400">
           {tracks.length} {tracks.length === 1 ? "track" : "tracks"} • {totalLengthFormatted}
         </Text>
@@ -162,6 +186,7 @@ export default function CrateScreen() {
       <View className="flex-1 relative">
         {filteredTracks.length > 0 ? (
           <Swiper
+            ref={swiperRef}
             cards={filteredTracks}
             verticalSwipe
             horizontalSwipe={false}
@@ -174,6 +199,11 @@ export default function CrateScreen() {
             stackSize={stackSize}
             stackSeparation={-50}
             verticalThreshold={verticalSwipeThreshold}
+            onSwiped={() => {
+              setCurrentCardIndex((prev) =>
+                filteredTracks.length > 0 ? (prev + 1) % filteredTracks.length : 0
+              );
+            }}
             backgroundColor="transparent"
             animateCardOpacity={false}
             animateOverlayLabelsOpacity={false}
